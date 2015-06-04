@@ -1,6 +1,6 @@
 <?php
 
-class Profile extends \Phalcon\Mvc\Model
+class RefreshToken extends \Phalcon\Mvc\Model
 {
 
     /**
@@ -13,43 +13,39 @@ class Profile extends \Phalcon\Mvc\Model
      *
      * @var integer
      */
-    public $language_id;
+    public $client_id;
 
     /**
      *
      * @var integer
      */
-    public $civility_id;
+    public $user_id;
 
     /**
      *
      * @var string
      */
-    public $name;
+    public $token;
+
+    /**
+     *
+     * @var integer
+     */
+    public $expires_at;
 
     /**
      *
      * @var string
      */
-    public $firstname;
-
-    /**
-     *
-     * @var string
-     */
-    public $birthday;
+    public $scope;
 
     /**
      * Initialize method for model.
      */
     public function initialize()
     {
-        $this->hasMany('id', 'Media', 'profile_id', array('alias' => 'Media'));
-        $this->hasMany('id', 'ProfileHasBadge', 'profile_id', array('alias' => 'ProfileHasBadge'));
-        $this->hasMany('id', 'ProfileHasGroupe', 'profile_id', array('alias' => 'ProfileHasGroupe'));
-        $this->hasMany('id', 'User', 'profile_id', array('alias' => 'User'));
-        $this->belongsTo('civility_id', 'Civility', 'id', array('alias' => 'Civility'));
-        $this->belongsTo('language_id', 'Language', 'id', array('alias' => 'Language'));
+        $this->belongsTo('client_id', 'Client', 'id', array('alias' => 'Client'));
+        $this->belongsTo('user_id', 'User', 'id', array('alias' => 'User'));
     }
 
     /**
@@ -59,14 +55,14 @@ class Profile extends \Phalcon\Mvc\Model
      */
     public function getSource()
     {
-        return 'profile';
+        return 'refresh_token';
     }
 
     /**
      * Allows to query a set of records that match the specified conditions
      *
      * @param mixed $parameters
-     * @return Profile[]
+     * @return RefreshToken[]
      */
     public static function find($parameters = null)
     {
@@ -77,7 +73,7 @@ class Profile extends \Phalcon\Mvc\Model
      * Allows to query the first record that match the specified conditions
      *
      * @param mixed $parameters
-     * @return Profile
+     * @return RefreshToken
      */
     public static function findFirst($parameters = null)
     {

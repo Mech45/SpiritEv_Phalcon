@@ -1,6 +1,6 @@
 <?php
 
-class Profile extends \Phalcon\Mvc\Model
+class Media extends \Phalcon\Mvc\Model
 {
 
     /**
@@ -13,13 +13,13 @@ class Profile extends \Phalcon\Mvc\Model
      *
      * @var integer
      */
-    public $language_id;
+    public $evenement_id;
 
     /**
      *
      * @var integer
      */
-    public $civility_id;
+    public $profile_id;
 
     /**
      *
@@ -31,25 +31,21 @@ class Profile extends \Phalcon\Mvc\Model
      *
      * @var string
      */
-    public $firstname;
+    public $path;
 
     /**
      *
      * @var string
      */
-    public $birthday;
+    public $date_import;
 
     /**
      * Initialize method for model.
      */
     public function initialize()
     {
-        $this->hasMany('id', 'Media', 'profile_id', array('alias' => 'Media'));
-        $this->hasMany('id', 'ProfileHasBadge', 'profile_id', array('alias' => 'ProfileHasBadge'));
-        $this->hasMany('id', 'ProfileHasGroupe', 'profile_id', array('alias' => 'ProfileHasGroupe'));
-        $this->hasMany('id', 'User', 'profile_id', array('alias' => 'User'));
-        $this->belongsTo('civility_id', 'Civility', 'id', array('alias' => 'Civility'));
-        $this->belongsTo('language_id', 'Language', 'id', array('alias' => 'Language'));
+        $this->belongsTo('profile_id', 'Profile', 'id', array('alias' => 'Profile'));
+        $this->belongsTo('evenement_id', 'Event', 'id', array('alias' => 'Event'));
     }
 
     /**
@@ -59,14 +55,14 @@ class Profile extends \Phalcon\Mvc\Model
      */
     public function getSource()
     {
-        return 'profile';
+        return 'media';
     }
 
     /**
      * Allows to query a set of records that match the specified conditions
      *
      * @param mixed $parameters
-     * @return Profile[]
+     * @return Media[]
      */
     public static function find($parameters = null)
     {
@@ -77,7 +73,7 @@ class Profile extends \Phalcon\Mvc\Model
      * Allows to query the first record that match the specified conditions
      *
      * @param mixed $parameters
-     * @return Profile
+     * @return Media
      */
     public static function findFirst($parameters = null)
     {

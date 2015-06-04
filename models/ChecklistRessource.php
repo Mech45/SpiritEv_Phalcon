@@ -1,6 +1,6 @@
 <?php
 
-class Profile extends \Phalcon\Mvc\Model
+class ChecklistRessource extends \Phalcon\Mvc\Model
 {
 
     /**
@@ -13,43 +13,28 @@ class Profile extends \Phalcon\Mvc\Model
      *
      * @var integer
      */
-    public $language_id;
+    public $checklist_id;
 
     /**
      *
      * @var integer
      */
-    public $civility_id;
+    public $ressource_id;
 
     /**
      *
-     * @var string
+     * @var integer
      */
-    public $name;
-
-    /**
-     *
-     * @var string
-     */
-    public $firstname;
-
-    /**
-     *
-     * @var string
-     */
-    public $birthday;
+    public $quantity;
 
     /**
      * Initialize method for model.
      */
     public function initialize()
     {
-        $this->hasMany('id', 'Media', 'profile_id', array('alias' => 'Media'));
-        $this->hasMany('id', 'ProfileHasBadge', 'profile_id', array('alias' => 'ProfileHasBadge'));
-        $this->hasMany('id', 'ProfileHasGroupe', 'profile_id', array('alias' => 'ProfileHasGroupe'));
-        $this->hasMany('id', 'User', 'profile_id', array('alias' => 'User'));
-        $this->belongsTo('civility_id', 'Civility', 'id', array('alias' => 'Civility'));
-        $this->belongsTo('language_id', 'Language', 'id', array('alias' => 'Language'));
+        $this->hasMany('id', 'UserChecklistRessource', 'checklist_ressource_id', array('alias' => 'UserChecklistRessource'));
+        $this->belongsTo('checklist_id', 'Checklist', 'id', array('alias' => 'Checklist'));
+        $this->belongsTo('ressource_id', 'Ressource', 'id', array('alias' => 'Ressource'));
     }
 
     /**
@@ -59,14 +44,14 @@ class Profile extends \Phalcon\Mvc\Model
      */
     public function getSource()
     {
-        return 'profile';
+        return 'checklist_ressource';
     }
 
     /**
      * Allows to query a set of records that match the specified conditions
      *
      * @param mixed $parameters
-     * @return Profile[]
+     * @return ChecklistRessource[]
      */
     public static function find($parameters = null)
     {
@@ -77,7 +62,7 @@ class Profile extends \Phalcon\Mvc\Model
      * Allows to query the first record that match the specified conditions
      *
      * @param mixed $parameters
-     * @return Profile
+     * @return ChecklistRessource
      */
     public static function findFirst($parameters = null)
     {

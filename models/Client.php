@@ -1,6 +1,6 @@
 <?php
 
-class Profile extends \Phalcon\Mvc\Model
+class Client extends \Phalcon\Mvc\Model
 {
 
     /**
@@ -11,45 +11,36 @@ class Profile extends \Phalcon\Mvc\Model
 
     /**
      *
-     * @var integer
+     * @var string
      */
-    public $language_id;
-
-    /**
-     *
-     * @var integer
-     */
-    public $civility_id;
+    public $random_id;
 
     /**
      *
      * @var string
      */
-    public $name;
+    public $redirect_uris;
 
     /**
      *
      * @var string
      */
-    public $firstname;
+    public $secret;
 
     /**
      *
      * @var string
      */
-    public $birthday;
+    public $allowed_grant_types;
 
     /**
      * Initialize method for model.
      */
     public function initialize()
     {
-        $this->hasMany('id', 'Media', 'profile_id', array('alias' => 'Media'));
-        $this->hasMany('id', 'ProfileHasBadge', 'profile_id', array('alias' => 'ProfileHasBadge'));
-        $this->hasMany('id', 'ProfileHasGroupe', 'profile_id', array('alias' => 'ProfileHasGroupe'));
-        $this->hasMany('id', 'User', 'profile_id', array('alias' => 'User'));
-        $this->belongsTo('civility_id', 'Civility', 'id', array('alias' => 'Civility'));
-        $this->belongsTo('language_id', 'Language', 'id', array('alias' => 'Language'));
+        $this->hasMany('id', 'AccessToken', 'client_id', array('alias' => 'AccessToken'));
+        $this->hasMany('id', 'AuthCode', 'client_id', array('alias' => 'AuthCode'));
+        $this->hasMany('id', 'RefreshToken', 'client_id', array('alias' => 'RefreshToken'));
     }
 
     /**
@@ -59,14 +50,14 @@ class Profile extends \Phalcon\Mvc\Model
      */
     public function getSource()
     {
-        return 'profile';
+        return 'client';
     }
 
     /**
      * Allows to query a set of records that match the specified conditions
      *
      * @param mixed $parameters
-     * @return Profile[]
+     * @return Client[]
      */
     public static function find($parameters = null)
     {
@@ -77,7 +68,7 @@ class Profile extends \Phalcon\Mvc\Model
      * Allows to query the first record that match the specified conditions
      *
      * @param mixed $parameters
-     * @return Profile
+     * @return Client
      */
     public static function findFirst($parameters = null)
     {

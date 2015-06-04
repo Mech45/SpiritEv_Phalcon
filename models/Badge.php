@@ -1,6 +1,6 @@
 <?php
 
-class Profile extends \Phalcon\Mvc\Model
+class Badge extends \Phalcon\Mvc\Model
 {
 
     /**
@@ -8,18 +8,6 @@ class Profile extends \Phalcon\Mvc\Model
      * @var integer
      */
     public $id;
-
-    /**
-     *
-     * @var integer
-     */
-    public $language_id;
-
-    /**
-     *
-     * @var integer
-     */
-    public $civility_id;
 
     /**
      *
@@ -31,25 +19,14 @@ class Profile extends \Phalcon\Mvc\Model
      *
      * @var string
      */
-    public $firstname;
-
-    /**
-     *
-     * @var string
-     */
-    public $birthday;
+    public $url;
 
     /**
      * Initialize method for model.
      */
     public function initialize()
     {
-        $this->hasMany('id', 'Media', 'profile_id', array('alias' => 'Media'));
-        $this->hasMany('id', 'ProfileHasBadge', 'profile_id', array('alias' => 'ProfileHasBadge'));
-        $this->hasMany('id', 'ProfileHasGroupe', 'profile_id', array('alias' => 'ProfileHasGroupe'));
-        $this->hasMany('id', 'User', 'profile_id', array('alias' => 'User'));
-        $this->belongsTo('civility_id', 'Civility', 'id', array('alias' => 'Civility'));
-        $this->belongsTo('language_id', 'Language', 'id', array('alias' => 'Language'));
+        $this->hasMany('id', 'ProfileHasBadge', 'badge_id', array('alias' => 'ProfileHasBadge'));
     }
 
     /**
@@ -59,14 +36,14 @@ class Profile extends \Phalcon\Mvc\Model
      */
     public function getSource()
     {
-        return 'profile';
+        return 'badge';
     }
 
     /**
      * Allows to query a set of records that match the specified conditions
      *
      * @param mixed $parameters
-     * @return Profile[]
+     * @return Badge[]
      */
     public static function find($parameters = null)
     {
@@ -77,7 +54,7 @@ class Profile extends \Phalcon\Mvc\Model
      * Allows to query the first record that match the specified conditions
      *
      * @param mixed $parameters
-     * @return Profile
+     * @return Badge
      */
     public static function findFirst($parameters = null)
     {

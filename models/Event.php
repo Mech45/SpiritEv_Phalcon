@@ -1,6 +1,6 @@
 <?php
 
-class Profile extends \Phalcon\Mvc\Model
+class Event extends \Phalcon\Mvc\Model
 {
 
     /**
@@ -11,15 +11,21 @@ class Profile extends \Phalcon\Mvc\Model
 
     /**
      *
-     * @var integer
+     * @var string
      */
-    public $language_id;
+    public $date_create;
 
     /**
      *
-     * @var integer
+     * @var string
      */
-    public $civility_id;
+    public $date_update;
+
+    /**
+     *
+     * @var string
+     */
+    public $description;
 
     /**
      *
@@ -31,25 +37,35 @@ class Profile extends \Phalcon\Mvc\Model
      *
      * @var string
      */
-    public $firstname;
+    public $location;
+
+    /**
+     *
+     * @var integer
+     */
+    public $actif;
 
     /**
      *
      * @var string
      */
-    public $birthday;
+    public $hour_begin;
+
+    /**
+     *
+     * @var string
+     */
+    public $hour_end;
 
     /**
      * Initialize method for model.
      */
     public function initialize()
     {
-        $this->hasMany('id', 'Media', 'profile_id', array('alias' => 'Media'));
-        $this->hasMany('id', 'ProfileHasBadge', 'profile_id', array('alias' => 'ProfileHasBadge'));
-        $this->hasMany('id', 'ProfileHasGroupe', 'profile_id', array('alias' => 'ProfileHasGroupe'));
-        $this->hasMany('id', 'User', 'profile_id', array('alias' => 'User'));
-        $this->belongsTo('civility_id', 'Civility', 'id', array('alias' => 'Civility'));
-        $this->belongsTo('language_id', 'Language', 'id', array('alias' => 'Language'));
+        $this->hasMany('id', 'Checklist', 'event_id', array('alias' => 'Checklist'));
+        $this->hasMany('id', 'Comment', 'event_id', array('alias' => 'Comment'));
+        $this->hasMany('id', 'EventHasRight', 'event_id', array('alias' => 'EventHasRight'));
+        $this->hasMany('id', 'Media', 'evenement_id', array('alias' => 'Media'));
     }
 
     /**
@@ -59,14 +75,14 @@ class Profile extends \Phalcon\Mvc\Model
      */
     public function getSource()
     {
-        return 'profile';
+        return 'event';
     }
 
     /**
      * Allows to query a set of records that match the specified conditions
      *
      * @param mixed $parameters
-     * @return Profile[]
+     * @return Event[]
      */
     public static function find($parameters = null)
     {
@@ -77,7 +93,7 @@ class Profile extends \Phalcon\Mvc\Model
      * Allows to query the first record that match the specified conditions
      *
      * @param mixed $parameters
-     * @return Profile
+     * @return Event
      */
     public static function findFirst($parameters = null)
     {

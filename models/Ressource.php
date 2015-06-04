@@ -1,6 +1,6 @@
 <?php
 
-class Profile extends \Phalcon\Mvc\Model
+class Ressource extends \Phalcon\Mvc\Model
 {
 
     /**
@@ -13,13 +13,7 @@ class Profile extends \Phalcon\Mvc\Model
      *
      * @var integer
      */
-    public $language_id;
-
-    /**
-     *
-     * @var integer
-     */
-    public $civility_id;
+    public $category_id;
 
     /**
      *
@@ -28,28 +22,12 @@ class Profile extends \Phalcon\Mvc\Model
     public $name;
 
     /**
-     *
-     * @var string
-     */
-    public $firstname;
-
-    /**
-     *
-     * @var string
-     */
-    public $birthday;
-
-    /**
      * Initialize method for model.
      */
     public function initialize()
     {
-        $this->hasMany('id', 'Media', 'profile_id', array('alias' => 'Media'));
-        $this->hasMany('id', 'ProfileHasBadge', 'profile_id', array('alias' => 'ProfileHasBadge'));
-        $this->hasMany('id', 'ProfileHasGroupe', 'profile_id', array('alias' => 'ProfileHasGroupe'));
-        $this->hasMany('id', 'User', 'profile_id', array('alias' => 'User'));
-        $this->belongsTo('civility_id', 'Civility', 'id', array('alias' => 'Civility'));
-        $this->belongsTo('language_id', 'Language', 'id', array('alias' => 'Language'));
+        $this->hasMany('id', 'ChecklistRessource', 'ressource_id', array('alias' => 'ChecklistRessource'));
+        $this->belongsTo('category_id', 'Category', 'id', array('alias' => 'Category'));
     }
 
     /**
@@ -59,14 +37,14 @@ class Profile extends \Phalcon\Mvc\Model
      */
     public function getSource()
     {
-        return 'profile';
+        return 'ressource';
     }
 
     /**
      * Allows to query a set of records that match the specified conditions
      *
      * @param mixed $parameters
-     * @return Profile[]
+     * @return Ressource[]
      */
     public static function find($parameters = null)
     {
@@ -77,7 +55,7 @@ class Profile extends \Phalcon\Mvc\Model
      * Allows to query the first record that match the specified conditions
      *
      * @param mixed $parameters
-     * @return Profile
+     * @return Ressource
      */
     public static function findFirst($parameters = null)
     {

@@ -1,6 +1,6 @@
 <?php
 
-class Profile extends \Phalcon\Mvc\Model
+class Right extends \Phalcon\Mvc\Model
 {
 
     /**
@@ -13,43 +13,26 @@ class Profile extends \Phalcon\Mvc\Model
      *
      * @var integer
      */
-    public $language_id;
-
-    /**
-     *
-     * @var integer
-     */
-    public $civility_id;
+    public $indice;
 
     /**
      *
      * @var string
      */
-    public $name;
+    public $statut;
 
     /**
      *
      * @var string
      */
-    public $firstname;
-
-    /**
-     *
-     * @var string
-     */
-    public $birthday;
+    public $description;
 
     /**
      * Initialize method for model.
      */
     public function initialize()
     {
-        $this->hasMany('id', 'Media', 'profile_id', array('alias' => 'Media'));
-        $this->hasMany('id', 'ProfileHasBadge', 'profile_id', array('alias' => 'ProfileHasBadge'));
-        $this->hasMany('id', 'ProfileHasGroupe', 'profile_id', array('alias' => 'ProfileHasGroupe'));
-        $this->hasMany('id', 'User', 'profile_id', array('alias' => 'User'));
-        $this->belongsTo('civility_id', 'Civility', 'id', array('alias' => 'Civility'));
-        $this->belongsTo('language_id', 'Language', 'id', array('alias' => 'Language'));
+        $this->hasMany('id', 'EventHasRight', 'right_id', array('alias' => 'EventHasRight'));
     }
 
     /**
@@ -59,14 +42,14 @@ class Profile extends \Phalcon\Mvc\Model
      */
     public function getSource()
     {
-        return 'profile';
+        return 'right';
     }
 
     /**
      * Allows to query a set of records that match the specified conditions
      *
      * @param mixed $parameters
-     * @return Profile[]
+     * @return Right[]
      */
     public static function find($parameters = null)
     {
@@ -77,7 +60,7 @@ class Profile extends \Phalcon\Mvc\Model
      * Allows to query the first record that match the specified conditions
      *
      * @param mixed $parameters
-     * @return Profile
+     * @return Right
      */
     public static function findFirst($parameters = null)
     {
