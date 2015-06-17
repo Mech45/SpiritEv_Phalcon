@@ -1,4 +1,7 @@
 <?php
+namespace PhalconRest\Models;
+use \PhalconRest\Exceptions\HTTPException;
+use Phalcon\Mvc\Model\Validator\Uniqueness as Uniqueness;
 
 use Phalcon\Mvc\Model\Validator\Email as Email;
 
@@ -134,9 +137,23 @@ class User extends \Phalcon\Mvc\Model
                 )
             )
         );
+        $this->validate(new Uniqueness(
+            array(
+                "field"   => "username",
+                "message" => "Pseudo déjà utilisé"
+            )
+        ));
 
         if ($this->validationHasFailed() == true) {
-            return false;
+            throw new \PhalconRest\Exceptions\HTTPException(
+                'Bad Request',
+                400,
+                array (
+                    'dev' => 'Pseudo deja utilisé',
+                    'internalCode' => 'SpiritErrorUserSetUsername',
+                    'more' => "there is no more here sorry"
+                )
+            );
         }
 
         return true;

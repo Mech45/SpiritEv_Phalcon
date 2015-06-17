@@ -1,4 +1,6 @@
 <?php
+namespace PhalconRest\Models;
+use \PhalconRest\Exceptions\HTTPException;
 
 class Media extends \Phalcon\Mvc\Model
 {

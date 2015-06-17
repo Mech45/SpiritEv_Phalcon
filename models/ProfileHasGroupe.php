@@ -1,4 +1,6 @@
 <?php
+namespace PhalconRest\Models;
+use \PhalconRest\Exceptions\HTTPException;
 
 class ProfileHasGroupe extends \Phalcon\Mvc\Model
 {

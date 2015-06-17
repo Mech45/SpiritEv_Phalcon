@@ -1,4 +1,6 @@
 <?php
+namespace PhalconRest\Models;
+use \PhalconRest\Exceptions\HTTPException;
 
 class ProfileHasBadge extends \Phalcon\Mvc\Model
 {

@@ -1,7 +1,12 @@
 <?php
 namespace PhalconRest\Controllers;
 use \PhalconRest\Exceptions\HTTPException;
+use \Phalcon\Http\Request as Request;
+use PhalconRest\Models\User;
 use PhalconRest\Models\Profile;
+use PhalconRest\Models\Civility;
+use PhalconRest\Models\Language;
+use PhalconRest\Models\Media;
 
 class ProfileController extends RESTController {
     
@@ -11,46 +16,164 @@ class ProfileController extends RESTController {
     * @var array
     */
    protected $allowedFields = array (
-           'search' => array('name', 'firstname'),
-           'partials' => array('name', 'firstname')
+           'search' => array('name', 'firstname', 'username', "civility"),
+           'partials' => array('name', 'firstname', 'username', "civility")
    );
     
     public function get() {
         $results = Profile::find();
-        $data = array();
-        foreach ($results as $result) {
-            $data[] = array(
-                "name" => $result->name,
-                "firstname" => $result->firstname,
-            );
-        }
-        return $this->respond($this->search($data));
+        return $this->respond($this->search($this->genericGet($results)));
     }
 
-    public function getOne($id){
+    public function getOne($id) {
         $results = Profile::find($id);
-        $data = array();
-        foreach ($results as $result) {
-            $data[] = array(
-                "name" => $result->name,
-                "firstname" => $result->firstname,
+        if(count($results) !== 1) {
+            throw new \PhalconRest\Exceptions\HTTPException(
+                'Bad Request',
+                400,
+                array (
+                    'dev' => 'Aucun profil trouvé',
+                    'internalCode' => 'SpiritErrorProfilControllerGetOne',
+                    'more' => '$id == ' . $id
+                )
             );
         }
-        return $this->respond($this->search($data));
+        return $this->respond($this->search($this->genericGet($results)));
+    }
+    
+    private function genericGet($results) {
+        $data = array();
+        foreach ($results as $result) {
+            $data[] = array (
+                "name" => $result->name,
+                "firstname" => $result->firstname,
+                "username" => User::findFirst("profile_id=" . $result->id)->username,
+                "civility" => Civility::findFirst($result->civility_id)->name,
+                "birthday" => $result->birthday,
+                "language" => array (
+                                "name" => Language::findFirst($result->language_id)->name,
+                                "code" => Language::findFirst($result->language_id)->code
+                ),
+                "picture" => array (
+                                "name" => Media::findFirst("profile_id=" . $result->id)->name,
+                                "path" => Media::findFirst("profile_id=" . $result->id)->path,
+                                "date_import" => Media::findFirst("profile_id=" . $result->id)->date_import
+                )
+            );
+        }
+        return $data;
     }
 
-    public function post(){
+    public function post() {
         return array('Post / stub');
     }
 
-    public function delete($id){
+    public function delete($id) {
         return array('Delete / stub');
     }
 
-    public function put($id){
+    public function put($id) {
+        $request = new Request();
+        $datas = $request->getJsonRawBody();
+        $profil = Profile::findFirst("id = " . $id);
+        if (!$profil) {
+            throw new \PhalconRest\Exceptions\HTTPException(
+                'Bad Request',
+                400,
+                array (
+                    'dev' => 'Aucun profil trouvé',
+                    'internalCode' => 'SpiritErrorProfilControllerPut',
+                    'more' => '$id == ' . $id
+                )
+            );
+        }
+        if (isset($datas->name)) {
+            $profil->setName($datas->name);
+        } if (isset($datas->firstname)) {
+            $profil->setFirstname($datas->firstname);
+        } if (isset($datas->username)) {
+            $user = User::findFirst("profile_id=" . $id);
+            if (!$user) {
+                throw new \PhalconRest\Exceptions\HTTPException(
+                    'Bad Request',
+                    400,
+                    array (
+                        'dev' => 'Aucun utilisateur trouvé',
+                        'internalCode' => 'SpiritErrorProfilControllerPut',
+                        'more' => '$profile_id == ' . $id
+                    )
+                );
+            }
+            $user->username = $datas->username;
+            $user->save();
+        } if (isset($datas->civility)) {
+            $profil->civility_id = Civility::findFirst(array(array("name" => $datas->civility)))->id;
+        } if (isset($datas->birthday)) {
+            $profil->setBirthday($datas->birthday);
+        } if (isset($datas->language)) {
+            $profil->language_id = Language::findFirst(array(array("code=" => $datas->language)))->id;
+        } if (isset($datas->password) && isset($datas->newpassword) && isset($datas->renewpassword)) {
+            $this->setNewPassword($id, $datas->password, $datas->newpassword, $datas->renewpassword);
+        }
+        $profil->update();
         return array('Put / stub');
     }
 
+    private function setNewPassword($id, $password, $newpassword, $renewpassword) {
+        $user = User::findFirst("profile_id=" . $id);
+        if (!$user) {
+            throw new \PhalconRest\Exceptions\HTTPException(
+                'Bad Request',
+                400,
+                array (
+                    'dev' => 'Aucun utilisateur trouvé',
+                    'internalCode' => 'SpiritErrorProfilControllerSetNewPassword',
+                    'more' => '$id == ' . $id
+                )
+            );
+        }
+        if ((strlen($password) == 40) && (strlen($newpassword) == 40) && 
+                ($newpassword === $renewpassword)) {
+            if (!(sha1($password . $user->salt) == $user->password)) {
+                throw new \PhalconRest\Exceptions\HTTPException(
+                    'Bad Request',
+                    400,
+                    array (
+                        'dev' => 'Mot de passe erronés',
+                        'internalCode' => 'SpiritErrorProfilControllerSetNewPassword',
+                        'more' => '$password => ' . $password . 
+                                    '<br>$user->salt => ' . $user->salt . 
+                                    '<br>$user->password => ' . $user->password
+                    )
+                );
+            }
+            $salt = $this->generateSaltDot();
+            $user->salt = $salt;
+            $user->password = sha1($newpassword . $salt);
+            $user->update();
+        }
+        else {
+            throw new \PhalconRest\Exceptions\HTTPException(
+                'Bad Request',
+                400,
+                array (
+                    'dev' => 'Mot de passe erronés',
+                    'internalCode' => 'SpiritErrorProfilControllerSetNewPassword',
+                    'more' => 'the is no more here sorry'
+                )
+            );
+        }
+    }
+    
+    private function generateSaltDot() {
+        $salt_dot = "";
+        $chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        for ($i = 0; $i < 40; $i++) {
+            $salt_dot .= $chars[rand(0, strlen($chars) - 1)];
+        }
+        return $salt_dot;
+    }
+    
     public function patch($id) {
         return array('Patch / stub');
     }
@@ -58,17 +181,18 @@ class ProfileController extends RESTController {
     public function search($data) {
         $results = array();
         foreach($data as $record) {
-                $match = true;
+            $match = true;
+            if (is_array($this->searchFields) || is_object($this->searchFields)) {
                 foreach ($this->searchFields as $field => $value) {
-                        if(!(strpos($record[$field], $value) !== FALSE)) {
-                                $match = false;
-                        }
+                    if(!(strpos($record[$field], $value) !== FALSE)) {
+                            $match = false;
+                    }
                 }
-                if($match) {
-                        $results[] = $record;
-                }
+            }
+            if($match) {
+                    $results[] = $record;
+            }
         }
-
         return $results;
     }
 
