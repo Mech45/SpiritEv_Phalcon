@@ -53,7 +53,6 @@ class Profile extends \Phalcon\Mvc\Model
         $this->hasMany('id', 'User', 'profile_id', array('alias' => 'User'));
         $this->belongsTo('civility_id', 'Civility', 'id', array('alias' => 'Civility'));
         $this->belongsTo('language_id', 'Language', 'id', array('alias' => 'Language'));
-        $this->useDynamicUpdate(true);
     }
 
     /**
@@ -74,7 +73,7 @@ class Profile extends \Phalcon\Mvc\Model
     {
         //The name is too short?
         if (strlen($name) < 1) {
-            throw new \PhalconRest\Exceptions\HTTPException(
+            throw new HTTPException(
                 'Bad Request',
                 400,
                 array(
@@ -85,7 +84,7 @@ class Profile extends \Phalcon\Mvc\Model
             );
         }
         if (!preg_match("#^\p{L}+$#u",$name)) {
-            throw new \PhalconRest\Exceptions\HTTPException(
+            throw new HTTPException(
                 'Bad Request',
                 400,
                 array(
@@ -106,7 +105,7 @@ class Profile extends \Phalcon\Mvc\Model
     {
         //The firstname is too short?
         if (strlen($firstname) < 1) {
-            throw new \PhalconRest\Exceptions\HTTPException(
+            throw new HTTPException(
                 'Bad Request',
                 400,
                 array(
@@ -117,7 +116,7 @@ class Profile extends \Phalcon\Mvc\Model
             );
         }
         if (!preg_match("#^\p{L}+$#u", $firstname)) {
-            throw new \PhalconRest\Exceptions\HTTPException(
+            throw new HTTPException(
                 'Bad Request',
                 400,
                 array(
@@ -138,7 +137,7 @@ class Profile extends \Phalcon\Mvc\Model
     public function setBirthday($birthday)
     {
         if (!$this->validateMySqlDate($birthday)) {
-            throw new \PhalconRest\Exceptions\HTTPException(
+            throw new HTTPException(
                 'Bad Request',
                 400,
                 array (
@@ -148,7 +147,7 @@ class Profile extends \Phalcon\Mvc\Model
                 )
             );
         } else if (strtotime($birthday) >= strtotime('now')) {
-            throw new \PhalconRest\Exceptions\HTTPException(
+            throw new HTTPException(
                 'Bad Request',
                 400,
                 array (

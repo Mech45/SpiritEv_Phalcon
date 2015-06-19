@@ -1,6 +1,6 @@
 <?php
 namespace PhalconRest\Controllers;
-use \PhalconRest\Exceptions\HTTPException;
+use \PhalconRest\Exceptions\HTTPException as HTTPException;
 use \Phalcon\Http\Request as Request;
 use PhalconRest\Models\User;
 use PhalconRest\Models\Profile;
@@ -10,6 +10,7 @@ use PhalconRest\Models\Media;
 
 class ProfileController extends RESTController {
     
+    private $hash_front_lenght = 40;
     /**
     * Sets which fields may be searched against, and which fields are allowed to be returned in
     * partial responses.
@@ -28,7 +29,7 @@ class ProfileController extends RESTController {
     public function getOne($id) {
         $results = Profile::find($id);
         if(count($results) !== 1) {
-            throw new \PhalconRest\Exceptions\HTTPException(
+            throw new HTTPException(
                 'Bad Request',
                 400,
                 array (
@@ -48,6 +49,7 @@ class ProfileController extends RESTController {
                 "name" => $result->name,
                 "firstname" => $result->firstname,
                 "username" => User::findFirst("profile_id=" . $result->id)->username,
+                "email" => User::findFirst("profile_id=" . $result->id)->email,
                 "civility" => Civility::findFirst($result->civility_id)->name,
                 "birthday" => $result->birthday,
                 "language" => array (
@@ -64,20 +66,12 @@ class ProfileController extends RESTController {
         return $data;
     }
 
-    public function post() {
-        return array('Post / stub');
-    }
-
-    public function delete($id) {
-        return array('Delete / stub');
-    }
-
     public function put($id) {
         $request = new Request();
         $datas = $request->getJsonRawBody();
         $profil = Profile::findFirst("id = " . $id);
         if (!$profil) {
-            throw new \PhalconRest\Exceptions\HTTPException(
+            throw new HTTPException(
                 'Bad Request',
                 400,
                 array (
@@ -94,7 +88,7 @@ class ProfileController extends RESTController {
         } if (isset($datas->username)) {
             $user = User::findFirst("profile_id=" . $id);
             if (!$user) {
-                throw new \PhalconRest\Exceptions\HTTPException(
+                throw new HTTPException(
                     'Bad Request',
                     400,
                     array (
@@ -105,13 +99,52 @@ class ProfileController extends RESTController {
                 );
             }
             $user->username = $datas->username;
-            $user->save();
+            $user->update();
+        } if (isset($datas->email)) {
+            $user = User::findFirst("profile_id=" . $id);
+            if (!$user) {
+                throw new HTTPException(
+                    'Bad Request',
+                    400,
+                    array (
+                        'dev' => 'Aucun utilisateur trouvé',
+                        'internalCode' => 'SpiritErrorProfilControllerPut',
+                        'more' => '$profile_id == ' . $id
+                    )
+                );
+            }
+            $user->email = $datas->email;
+            $user->update();
         } if (isset($datas->civility)) {
-            $profil->civility_id = Civility::findFirst(array(array("name" => $datas->civility)))->id;
+            $civility = Civility::findFirstByName($datas->civility);
+            if (!$civility) {
+                throw new HTTPException (
+                    'Bad Request',
+                    400,
+                    array (
+                        'dev' => 'Aucune civility trouvée',
+                        'internalCode' => 'SpiritErrorProfilControllerPut',
+                        'more' => '$civility_id == ' . $id
+                    )
+                );
+            }
+            $profil->civility_id = $civility->id;
         } if (isset($datas->birthday)) {
             $profil->setBirthday($datas->birthday);
         } if (isset($datas->language)) {
-            $profil->language_id = Language::findFirst(array(array("code=" => $datas->language)))->id;
+            $language = Language::findFirstByCode($datas->language);
+            if (!$language) {
+                throw new HTTPException (
+                    'Bad Request',
+                    400,
+                    array (
+                        'dev' => 'Aucune civility trouvée',
+                        'internalCode' => 'SpiritErrorProfilControllerPut',
+                        'more' => '$civility_id == ' . $id
+                    )
+                );
+            }
+            $profil->language_id = $language->id;
         } if (isset($datas->password) && isset($datas->newpassword) && isset($datas->renewpassword)) {
             $this->setNewPassword($id, $datas->password, $datas->newpassword, $datas->renewpassword);
         }
@@ -122,7 +155,7 @@ class ProfileController extends RESTController {
     private function setNewPassword($id, $password, $newpassword, $renewpassword) {
         $user = User::findFirst("profile_id=" . $id);
         if (!$user) {
-            throw new \PhalconRest\Exceptions\HTTPException(
+            throw new HTTPException(
                 'Bad Request',
                 400,
                 array (
@@ -132,18 +165,16 @@ class ProfileController extends RESTController {
                 )
             );
         }
-        if ((strlen($password) == 40) && (strlen($newpassword) == 40) && 
+        if ((strlen($password) == $this->hash_front_lenght) && (strlen($newpassword) == $this->hash_front_lenght) && 
                 ($newpassword === $renewpassword)) {
             if (!(sha1($password . $user->salt) == $user->password)) {
-                throw new \PhalconRest\Exceptions\HTTPException(
+                throw new HTTPException(
                     'Bad Request',
                     400,
                     array (
                         'dev' => 'Mot de passe erronés',
                         'internalCode' => 'SpiritErrorProfilControllerSetNewPassword',
-                        'more' => '$password => ' . $password . 
-                                    '<br>$user->salt => ' . $user->salt . 
-                                    '<br>$user->password => ' . $user->password
+                        'more' => 'there is no more here sorry'
                     )
                 );
             }
@@ -153,7 +184,7 @@ class ProfileController extends RESTController {
             $user->update();
         }
         else {
-            throw new \PhalconRest\Exceptions\HTTPException(
+            throw new HTTPException(
                 'Bad Request',
                 400,
                 array (
@@ -172,10 +203,6 @@ class ProfileController extends RESTController {
             $salt_dot .= $chars[rand(0, strlen($chars) - 1)];
         }
         return $salt_dot;
-    }
-    
-    public function patch($id) {
-        return array('Patch / stub');
     }
 
     public function search($data) {
