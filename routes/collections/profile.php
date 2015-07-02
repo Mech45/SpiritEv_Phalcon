@@ -34,6 +34,7 @@ return call_user_func(function(){
 	$profileCollection->post('/', 'post');
 	$profileCollection->delete('/{id:[0-9]+}', 'delete');
 	$profileCollection->put('/{id:[0-9]+}', 'put');
+        $profileCollection->post('/{id:[0-9]+}/photo', 'putPhoto');
 	$profileCollection->patch('/{id:[0-9]+}', 'patch');
 
 	return $profileCollection;
