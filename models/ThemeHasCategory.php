@@ -9,13 +9,59 @@ class ThemeHasCategory extends \Phalcon\Mvc\Model
      *
      * @var integer
      */
-    public $theme_id;
+    protected $theme_id;
 
     /**
      *
      * @var integer
      */
-    public $category_id;
+    protected $category_id;
+
+    /**
+     * Method to set the value of field theme_id
+     *
+     * @param integer $theme_id
+     * @return $this
+     */
+    public function setThemeId($theme_id)
+    {
+        $this->theme_id = $theme_id;
+
+        return $this;
+    }
+
+    /**
+     * Method to set the value of field category_id
+     *
+     * @param integer $category_id
+     * @return $this
+     */
+    public function setCategoryId($category_id)
+    {
+        $this->category_id = $category_id;
+
+        return $this;
+    }
+
+    /**
+     * Returns the value of field theme_id
+     *
+     * @return integer
+     */
+    public function getThemeId()
+    {
+        return $this->theme_id;
+    }
+
+    /**
+     * Returns the value of field category_id
+     *
+     * @return integer
+     */
+    public function getCategoryId()
+    {
+        return $this->category_id;
+    }
 
     /**
      * Initialize method for model.

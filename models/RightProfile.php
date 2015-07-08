@@ -2,52 +2,73 @@
 namespace PhalconRest\Models;
 use \PhalconRest\Exceptions\HTTPException;
 
-class RefreshToken extends \Phalcon\Mvc\Model
+class RightProfile extends \Phalcon\Mvc\Model
 {
 
     /**
      *
      * @var integer
      */
-    public $id;
-
-    /**
-     *
-     * @var integer
-     */
-    public $client_id;
-
-    /**
-     *
-     * @var integer
-     */
-    public $user_id;
+    protected $id;
 
     /**
      *
      * @var string
      */
-    public $token;
+    protected $name;
 
     /**
+     * Method to set the value of field id
      *
-     * @var integer
+     * @param integer $id
+     * @return $this
      */
-    public $expires_at;
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 
     /**
+     * Method to set the value of field name
      *
-     * @var string
+     * @param string $name
+     * @return $this
      */
-    public $scope;
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * Returns the value of field id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Returns the value of field name
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
 
     /**
      * Initialize method for model.
      */
     public function initialize()
     {
-        $this->belongsTo('client_id', 'Client', 'id', array('alias' => 'Client'));
-        $this->belongsTo('user_id', 'User', 'id', array('alias' => 'User'));
+        $this->hasMany('id', 'RightProfileHasGroupProfile', 'right_profile_id', array('alias' => 'RightProfileHasGroupProfile'));
     }
 
     /**
@@ -57,14 +78,14 @@ class RefreshToken extends \Phalcon\Mvc\Model
      */
     public function getSource()
     {
-        return 'refresh_token';
+        return 'right_profile';
     }
 
     /**
      * Allows to query a set of records that match the specified conditions
      *
      * @param mixed $parameters
-     * @return RefreshToken[]
+     * @return RightProfile[]
      */
     public static function find($parameters = null)
     {
@@ -75,7 +96,7 @@ class RefreshToken extends \Phalcon\Mvc\Model
      * Allows to query the first record that match the specified conditions
      *
      * @param mixed $parameters
-     * @return RefreshToken
+     * @return RightProfile
      */
     public static function findFirst($parameters = null)
     {

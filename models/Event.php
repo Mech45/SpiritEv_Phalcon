@@ -9,55 +9,262 @@ class Event extends \Phalcon\Mvc\Model
      *
      * @var integer
      */
-    public $id;
+    protected $id;
 
     /**
      *
      * @var string
      */
-    public $date_create;
+    protected $date_create;
 
     /**
      *
      * @var string
      */
-    public $date_update;
+    protected $date_update;
 
     /**
      *
      * @var string
      */
-    public $description;
+    protected $description;
 
     /**
      *
      * @var string
      */
-    public $name;
+    protected $name;
 
     /**
      *
      * @var string
      */
-    public $location;
+    protected $location;
 
     /**
      *
      * @var integer
      */
-    public $actif;
+    protected $actif;
 
     /**
      *
      * @var string
      */
-    public $hour_begin;
+    protected $hour_begin;
 
     /**
      *
      * @var string
      */
-    public $hour_end;
+    protected $hour_end;
+
+    /**
+     * Method to set the value of field id
+     *
+     * @param integer $id
+     * @return $this
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * Method to set the value of field date_create
+     *
+     * @param string $date_create
+     * @return $this
+     */
+    public function setDateCreate($date_create)
+    {
+        $this->date_create = $date_create;
+
+        return $this;
+    }
+
+    /**
+     * Method to set the value of field date_update
+     *
+     * @param string $date_update
+     * @return $this
+     */
+    public function setDateUpdate($date_update)
+    {
+        $this->date_update = $date_update;
+
+        return $this;
+    }
+
+    /**
+     * Method to set the value of field description
+     *
+     * @param string $description
+     * @return $this
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Method to set the value of field name
+     *
+     * @param string $name
+     * @return $this
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * Method to set the value of field location
+     *
+     * @param string $location
+     * @return $this
+     */
+    public function setLocation($location)
+    {
+        $this->location = $location;
+
+        return $this;
+    }
+
+    /**
+     * Method to set the value of field actif
+     *
+     * @param integer $actif
+     * @return $this
+     */
+    public function setActif($actif)
+    {
+        $this->actif = $actif;
+
+        return $this;
+    }
+
+    /**
+     * Method to set the value of field hour_begin
+     *
+     * @param string $hour_begin
+     * @return $this
+     */
+    public function setHourBegin($hour_begin)
+    {
+        $this->hour_begin = $hour_begin;
+
+        return $this;
+    }
+
+    /**
+     * Method to set the value of field hour_end
+     *
+     * @param string $hour_end
+     * @return $this
+     */
+    public function setHourEnd($hour_end)
+    {
+        $this->hour_end = $hour_end;
+
+        return $this;
+    }
+
+    /**
+     * Returns the value of field id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Returns the value of field date_create
+     *
+     * @return string
+     */
+    public function getDateCreate()
+    {
+        return $this->date_create;
+    }
+
+    /**
+     * Returns the value of field date_update
+     *
+     * @return string
+     */
+    public function getDateUpdate()
+    {
+        return $this->date_update;
+    }
+
+    /**
+     * Returns the value of field description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * Returns the value of field name
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Returns the value of field location
+     *
+     * @return string
+     */
+    public function getLocation()
+    {
+        return $this->location;
+    }
+
+    /**
+     * Returns the value of field actif
+     *
+     * @return integer
+     */
+    public function getActif()
+    {
+        return $this->actif;
+    }
+
+    /**
+     * Returns the value of field hour_begin
+     *
+     * @return string
+     */
+    public function getHourBegin()
+    {
+        return $this->hour_begin;
+    }
+
+    /**
+     * Returns the value of field hour_end
+     *
+     * @return string
+     */
+    public function getHourEnd()
+    {
+        return $this->hour_end;
+    }
 
     /**
      * Initialize method for model.

@@ -1,7 +1,6 @@
 <?php
 namespace PhalconRest\Models;
-use \PhalconRest\Exceptions\HTTPException as HTTPException;
-use \DateTime as DateTime;
+use \PhalconRest\Exceptions\HTTPException;
 
 class Profile extends \Phalcon\Mvc\Model
 {
@@ -10,46 +9,148 @@ class Profile extends \Phalcon\Mvc\Model
      *
      * @var integer
      */
-    public $id;
+    protected $id;
 
     /**
      *
      * @var integer
      */
-    public $language_id;
+    protected $language_id;
 
     /**
      *
      * @var integer
      */
-    public $civility_id;
+    protected $civility_id;
 
     /**
      *
      * @var string
      */
-    public $name;
+    protected $name;
 
     /**
      *
      * @var string
      */
-    public $firstname;
+    protected $firstname;
 
     /**
      *
      * @var string
      */
-    public $birthday;
+    protected $birthday;
+
+    /**
+     * Method to set the value of field id
+     *
+     * @param integer $id
+     * @return $this
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * Method to set the value of field language_id
+     *
+     * @param integer $language_id
+     * @return $this
+     */
+    public function setLanguageId($language_id)
+    {
+        $this->language_id = $language_id;
+
+        return $this;
+    }
+
+    /**
+     * Method to set the value of field civility_id
+     *
+     * @param integer $civility_id
+     * @return $this
+     */
+    public function setCivilityId($civility_id)
+    {
+        $this->civility_id = $civility_id;
+
+        return $this;
+    }
+
+    /**
+     * Returns the value of field id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Returns the value of field language_id
+     *
+     * @return integer
+     */
+    public function getLanguageId()
+    {
+        return $this->language_id;
+    }
+
+    /**
+     * Returns the value of field civility_id
+     *
+     * @return integer
+     */
+    public function getCivilityId()
+    {
+        return $this->civility_id;
+    }
+
+    /**
+     * Returns the value of field name
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Returns the value of field firstname
+     *
+     * @return string
+     */
+    public function getFirstname()
+    {
+        return $this->firstname;
+    }
+
+    /**
+     * Returns the value of field birthday
+     *
+     * @return string
+     */
+    public function getBirthday()
+    {
+        return $this->birthday;
+    }
 
     /**
      * Initialize method for model.
      */
     public function initialize()
     {
+        $this->hasMany('id', 'Invitation', 'profile_id', array('alias' => 'Invitation'));
         $this->hasMany('id', 'Media', 'profile_id', array('alias' => 'Media'));
         $this->hasMany('id', 'ProfileHasBadge', 'profile_id', array('alias' => 'ProfileHasBadge'));
-        $this->hasMany('id', 'ProfileHasGroupe', 'profile_id', array('alias' => 'ProfileHasGroupe'));
+        $this->hasMany('id', 'ProfileHasGroup', 'profile_id', array('alias' => 'ProfileHasGroup'));
+        $this->hasMany('id', 'ProfileHasProfile', 'profile_id', array('alias' => 'ProfileHasProfile'));
+        $this->hasMany('id', 'ProfileHasProfile', 'profile_friend_id1', array('alias' => 'ProfileHasProfile'));
         $this->hasMany('id', 'User', 'profile_id', array('alias' => 'User'));
         $this->belongsTo('civility_id', 'Civility', 'id', array('alias' => 'Civility'));
         $this->belongsTo('language_id', 'Language', 'id', array('alias' => 'Language'));
@@ -65,7 +166,29 @@ class Profile extends \Phalcon\Mvc\Model
         return 'profile';
     }
 
-    /*
+    /**
+     * Allows to query a set of records that match the specified conditions
+     *
+     * @param mixed $parameters
+     * @return Profile[]
+     */
+    public static function find($parameters = null)
+    {
+        return parent::find($parameters);
+    }
+
+    /**
+     * Allows to query the first record that match the specified conditions
+     *
+     * @param mixed $parameters
+     * @return Profile
+     */
+    public static function findFirst($parameters = null)
+    {
+        return parent::findFirst($parameters);
+    }
+
+        /*
      * permet de setter le nom
      * @return void
      */
@@ -164,32 +287,6 @@ class Profile extends \Phalcon\Mvc\Model
     {
         $d = DateTime::createFromFormat($format, $date);
         return $d && $d->format($format) == $date;
-    }
-    /**
-     * Allows to query a set of records that match the specified conditions
-     *
-     * @param mixed $parameters
-     * @return Profile[]
-     */
-    public static function find($parameters = null)
-    {
-        return parent::find($parameters);
-    }
-
-    /**
-     * Allows to query the first record that match the specified conditions
-     *
-     * @param mixed $parameters
-     * @return Profile
-     */
-    public static function findFirst($parameters = null)
-    {
-        return parent::findFirst($parameters);
-    }
-    
-    public function save($data = null, $whiteList = null)
-    {
-       parent::save($data, $whiteList);
     }
 
 }

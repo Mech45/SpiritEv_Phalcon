@@ -9,19 +9,88 @@ class Checklist extends \Phalcon\Mvc\Model
      *
      * @var integer
      */
-    public $id;
+    protected $id;
 
     /**
      *
      * @var integer
      */
-    public $event_id;
+    protected $event_id;
 
     /**
      *
      * @var string
      */
-    public $name;
+    protected $name;
+
+    /**
+     * Method to set the value of field id
+     *
+     * @param integer $id
+     * @return $this
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * Method to set the value of field event_id
+     *
+     * @param integer $event_id
+     * @return $this
+     */
+    public function setEventId($event_id)
+    {
+        $this->event_id = $event_id;
+
+        return $this;
+    }
+
+    /**
+     * Method to set the value of field name
+     *
+     * @param string $name
+     * @return $this
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * Returns the value of field id
+     *
+     * @return integer
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Returns the value of field event_id
+     *
+     * @return integer
+     */
+    public function getEventId()
+    {
+        return $this->event_id;
+    }
+
+    /**
+     * Returns the value of field name
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
 
     /**
      * Initialize method for model.

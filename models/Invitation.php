@@ -3,7 +3,7 @@ namespace PhalconRest\Models;
 use \PhalconRest\Exceptions\HTTPException;
 use Phalcon\Mvc\Model\Validator\Email as Email;
 
-class User extends \Phalcon\Mvc\Model
+class Invitation extends \Phalcon\Mvc\Model
 {
 
     /**
@@ -22,7 +22,7 @@ class User extends \Phalcon\Mvc\Model
      *
      * @var string
      */
-    protected $username;
+    protected $guest_id;
 
     /**
      *
@@ -32,33 +32,33 @@ class User extends \Phalcon\Mvc\Model
 
     /**
      *
-     * @var integer
+     * @var string
      */
-    protected $enabled;
+    protected $invitation_date;
 
     /**
      *
      * @var string
      */
-    protected $salt;
+    protected $relanch_invitation_date;
 
     /**
      *
      * @var string
      */
-    protected $password;
+    protected $validation_invitation_date;
 
     /**
      *
      * @var string
      */
-    protected $last_login;
+    protected $token;
 
     /**
      *
-     * @var integer
+     * @var string
      */
-    protected $locked;
+    protected $token_expiration;
 
     /**
      * Method to set the value of field id
@@ -87,14 +87,14 @@ class User extends \Phalcon\Mvc\Model
     }
 
     /**
-     * Method to set the value of field username
+     * Method to set the value of field guest_id
      *
-     * @param string $username
+     * @param string $guest_id
      * @return $this
      */
-    public function setUsername($username)
+    public function setGuestId($guest_id)
     {
-        $this->username = $username;
+        $this->guest_id = $guest_id;
 
         return $this;
     }
@@ -113,66 +113,66 @@ class User extends \Phalcon\Mvc\Model
     }
 
     /**
-     * Method to set the value of field enabled
+     * Method to set the value of field invitation_date
      *
-     * @param integer $enabled
+     * @param string $invitation_date
      * @return $this
      */
-    public function setEnabled($enabled)
+    public function setInvitationDate($invitation_date)
     {
-        $this->enabled = $enabled;
+        $this->invitation_date = $invitation_date;
 
         return $this;
     }
 
     /**
-     * Method to set the value of field salt
+     * Method to set the value of field relanch_invitation_date
      *
-     * @param string $salt
+     * @param string $relanch_invitation_date
      * @return $this
      */
-    public function setSalt($salt)
+    public function setRelanchInvitationDate($relanch_invitation_date)
     {
-        $this->salt = $salt;
+        $this->relanch_invitation_date = $relanch_invitation_date;
 
         return $this;
     }
 
     /**
-     * Method to set the value of field password
+     * Method to set the value of field validation_invitation_date
      *
-     * @param string $password
+     * @param string $validation_invitation_date
      * @return $this
      */
-    public function setPassword($password)
+    public function setValidationInvitationDate($validation_invitation_date)
     {
-        $this->password = $password;
+        $this->validation_invitation_date = $validation_invitation_date;
 
         return $this;
     }
 
     /**
-     * Method to set the value of field last_login
+     * Method to set the value of field token
      *
-     * @param string $last_login
+     * @param string $token
      * @return $this
      */
-    public function setLastLogin($last_login)
+    public function setToken($token)
     {
-        $this->last_login = $last_login;
+        $this->token = $token;
 
         return $this;
     }
 
     /**
-     * Method to set the value of field locked
+     * Method to set the value of field token_expiration
      *
-     * @param integer $locked
+     * @param string $token_expiration
      * @return $this
      */
-    public function setLocked($locked)
+    public function setTokenExpiration($token_expiration)
     {
-        $this->locked = $locked;
+        $this->token_expiration = $token_expiration;
 
         return $this;
     }
@@ -198,13 +198,13 @@ class User extends \Phalcon\Mvc\Model
     }
 
     /**
-     * Returns the value of field username
+     * Returns the value of field guest_id
      *
      * @return string
      */
-    public function getUsername()
+    public function getGuestId()
     {
-        return $this->username;
+        return $this->guest_id;
     }
 
     /**
@@ -218,53 +218,53 @@ class User extends \Phalcon\Mvc\Model
     }
 
     /**
-     * Returns the value of field enabled
-     *
-     * @return integer
-     */
-    public function getEnabled()
-    {
-        return $this->enabled;
-    }
-
-    /**
-     * Returns the value of field salt
+     * Returns the value of field invitation_date
      *
      * @return string
      */
-    public function getSalt()
+    public function getInvitationDate()
     {
-        return $this->salt;
+        return $this->invitation_date;
     }
 
     /**
-     * Returns the value of field password
+     * Returns the value of field relanch_invitation_date
      *
      * @return string
      */
-    public function getPassword()
+    public function getRelanchInvitationDate()
     {
-        return $this->password;
+        return $this->relanch_invitation_date;
     }
 
     /**
-     * Returns the value of field last_login
+     * Returns the value of field validation_invitation_date
      *
      * @return string
      */
-    public function getLastLogin()
+    public function getValidationInvitationDate()
     {
-        return $this->last_login;
+        return $this->validation_invitation_date;
     }
 
     /**
-     * Returns the value of field locked
+     * Returns the value of field token
      *
-     * @return integer
+     * @return string
      */
-    public function getLocked()
+    public function getToken()
     {
-        return $this->locked;
+        return $this->token;
+    }
+
+    /**
+     * Returns the value of field token_expiration
+     *
+     * @return string
+     */
+    public function getTokenExpiration()
+    {
+        return $this->token_expiration;
     }
 
     /**
@@ -282,23 +282,9 @@ class User extends \Phalcon\Mvc\Model
                 )
             )
         );
-        $this->validate(new Uniqueness(
-            array(
-                "field"   => "username",
-                "message" => "Pseudo déjà utilisé"
-            )
-        ));
 
         if ($this->validationHasFailed() == true) {
-            throw new \PhalconRest\Exceptions\HTTPException(
-                'Bad Request',
-                400,
-                array (
-                    'dev' => 'Pseudo deja utilisé',
-                    'internalCode' => 'SpiritErrorUserSetUsername',
-                    'more' => "there is no more here sorry"
-                )
-            );
+            return false;
         }
 
         return true;
@@ -309,9 +295,6 @@ class User extends \Phalcon\Mvc\Model
      */
     public function initialize()
     {
-        $this->hasMany('id', 'Comment', 'user_id', array('alias' => 'Comment'));
-        $this->hasMany('id', 'EventHasRight', 'user_id', array('alias' => 'EventHasRight'));
-        $this->hasMany('id', 'UserChecklistRessource', 'user_id', array('alias' => 'UserChecklistRessource'));
         $this->belongsTo('profile_id', 'Profile', 'id', array('alias' => 'Profile'));
     }
 
@@ -322,14 +305,14 @@ class User extends \Phalcon\Mvc\Model
      */
     public function getSource()
     {
-        return 'user';
+        return 'invitation';
     }
 
     /**
      * Allows to query a set of records that match the specified conditions
      *
      * @param mixed $parameters
-     * @return User[]
+     * @return Invitation[]
      */
     public static function find($parameters = null)
     {
@@ -340,7 +323,7 @@ class User extends \Phalcon\Mvc\Model
      * Allows to query the first record that match the specified conditions
      *
      * @param mixed $parameters
-     * @return User
+     * @return Invitation
      */
     public static function findFirst($parameters = null)
     {

@@ -2,65 +2,65 @@
 namespace PhalconRest\Models;
 use \PhalconRest\Exceptions\HTTPException;
 
-class Civility extends \Phalcon\Mvc\Model
+class ProfileHasProfile extends \Phalcon\Mvc\Model
 {
 
     /**
      *
      * @var integer
      */
-    protected $id;
+    protected $profile_id;
 
     /**
      *
-     * @var string
+     * @var integer
      */
-    protected $name;
+    protected $profile_friend_id1;
 
     /**
-     * Method to set the value of field id
+     * Method to set the value of field profile_id
      *
-     * @param integer $id
+     * @param integer $profile_id
      * @return $this
      */
-    public function setId($id)
+    public function setProfileId($profile_id)
     {
-        $this->id = $id;
+        $this->profile_id = $profile_id;
 
         return $this;
     }
 
     /**
-     * Method to set the value of field name
+     * Method to set the value of field profile_friend_id1
      *
-     * @param string $name
+     * @param integer $profile_friend_id1
      * @return $this
      */
-    public function setName($name)
+    public function setProfileFriendId1($profile_friend_id1)
     {
-        $this->name = $name;
+        $this->profile_friend_id1 = $profile_friend_id1;
 
         return $this;
     }
 
     /**
-     * Returns the value of field id
+     * Returns the value of field profile_id
      *
      * @return integer
      */
-    public function getId()
+    public function getProfileId()
     {
-        return $this->id;
+        return $this->profile_id;
     }
 
     /**
-     * Returns the value of field name
+     * Returns the value of field profile_friend_id1
      *
-     * @return string
+     * @return integer
      */
-    public function getName()
+    public function getProfileFriendId1()
     {
-        return $this->name;
+        return $this->profile_friend_id1;
     }
 
     /**
@@ -68,7 +68,8 @@ class Civility extends \Phalcon\Mvc\Model
      */
     public function initialize()
     {
-        $this->hasMany('id', 'Profile', 'civility_id', array('alias' => 'Profile'));
+        $this->belongsTo('profile_id', 'Profile', 'id', array('alias' => 'Profile'));
+        $this->belongsTo('profile_friend_id1', 'Profile', 'id', array('alias' => 'Profile'));
     }
 
     /**
@@ -78,14 +79,14 @@ class Civility extends \Phalcon\Mvc\Model
      */
     public function getSource()
     {
-        return 'civility';
+        return 'profile_has_profile';
     }
 
     /**
      * Allows to query a set of records that match the specified conditions
      *
      * @param mixed $parameters
-     * @return Civility[]
+     * @return ProfileHasProfile[]
      */
     public static function find($parameters = null)
     {
@@ -96,7 +97,7 @@ class Civility extends \Phalcon\Mvc\Model
      * Allows to query the first record that match the specified conditions
      *
      * @param mixed $parameters
-     * @return Civility
+     * @return ProfileHasProfile
      */
     public static function findFirst($parameters = null)
     {

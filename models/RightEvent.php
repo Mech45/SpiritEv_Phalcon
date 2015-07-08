@@ -2,7 +2,7 @@
 namespace PhalconRest\Models;
 use \PhalconRest\Exceptions\HTTPException;
 
-class Ressource extends \Phalcon\Mvc\Model
+class RightEvent extends \Phalcon\Mvc\Model
 {
 
     /**
@@ -15,13 +15,19 @@ class Ressource extends \Phalcon\Mvc\Model
      *
      * @var integer
      */
-    protected $category_id;
+    protected $indice;
 
     /**
      *
      * @var string
      */
-    protected $name;
+    protected $statut;
+
+    /**
+     *
+     * @var string
+     */
+    protected $description;
 
     /**
      * Method to set the value of field id
@@ -37,27 +43,40 @@ class Ressource extends \Phalcon\Mvc\Model
     }
 
     /**
-     * Method to set the value of field category_id
+     * Method to set the value of field indice
      *
-     * @param integer $category_id
+     * @param integer $indice
      * @return $this
      */
-    public function setCategoryId($category_id)
+    public function setIndice($indice)
     {
-        $this->category_id = $category_id;
+        $this->indice = $indice;
 
         return $this;
     }
 
     /**
-     * Method to set the value of field name
+     * Method to set the value of field statut
      *
-     * @param string $name
+     * @param string $statut
      * @return $this
      */
-    public function setName($name)
+    public function setStatut($statut)
     {
-        $this->name = $name;
+        $this->statut = $statut;
+
+        return $this;
+    }
+
+    /**
+     * Method to set the value of field description
+     *
+     * @param string $description
+     * @return $this
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
 
         return $this;
     }
@@ -73,23 +92,33 @@ class Ressource extends \Phalcon\Mvc\Model
     }
 
     /**
-     * Returns the value of field category_id
+     * Returns the value of field indice
      *
      * @return integer
      */
-    public function getCategoryId()
+    public function getIndice()
     {
-        return $this->category_id;
+        return $this->indice;
     }
 
     /**
-     * Returns the value of field name
+     * Returns the value of field statut
      *
      * @return string
      */
-    public function getName()
+    public function getStatut()
     {
-        return $this->name;
+        return $this->statut;
+    }
+
+    /**
+     * Returns the value of field description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
     }
 
     /**
@@ -97,8 +126,7 @@ class Ressource extends \Phalcon\Mvc\Model
      */
     public function initialize()
     {
-        $this->hasMany('id', 'ChecklistRessource', 'ressource_id', array('alias' => 'ChecklistRessource'));
-        $this->belongsTo('category_id', 'Category', 'id', array('alias' => 'Category'));
+        $this->hasMany('id', 'EventHasRight', 'right_event_id', array('alias' => 'EventHasRight'));
     }
 
     /**
@@ -108,14 +136,14 @@ class Ressource extends \Phalcon\Mvc\Model
      */
     public function getSource()
     {
-        return 'ressource';
+        return 'right_event';
     }
 
     /**
      * Allows to query a set of records that match the specified conditions
      *
      * @param mixed $parameters
-     * @return Ressource[]
+     * @return RightEvent[]
      */
     public static function find($parameters = null)
     {
@@ -126,7 +154,7 @@ class Ressource extends \Phalcon\Mvc\Model
      * Allows to query the first record that match the specified conditions
      *
      * @param mixed $parameters
-     * @return Ressource
+     * @return RightEvent
      */
     public static function findFirst($parameters = null)
     {
