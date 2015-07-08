@@ -117,11 +117,32 @@ class Event extends \Phalcon\Mvc\Model
      * @param string $name
      * @return $this
      */
-    public function setName($name)
+public function setName($name)
     {
+        //The name is too short?
+        if (strlen($name) < 1) {
+            throw new HTTPException(
+                'Bad Request',
+                400,
+                array(
+                    'dev' => 'Le nom doit comporter au moins 1 char',
+                    'internalCode' => 'SpiritErrorProfilSetName',
+                    'more' => 'there is no more here sorry'
+                )
+            );
+        }
+//        if (!preg_match("#^\p{L}+$#u",$name)) {
+//            throw new HTTPException(
+//                'Bad Request',
+//                400,
+//                array(
+//                    'dev' => 'Caracteres numériques interdit',
+//                    'internalCode' => 'SpiritErrorProfilSetName',
+//                    'more' => '$name == ' . $name
+//                )
+//            );
+//        }
         $this->name = $name;
-
-        return $this;
     }
 
     /**
@@ -158,6 +179,28 @@ class Event extends \Phalcon\Mvc\Model
      */
     public function setHourBegin($hour_begin)
     {
+        if (!$this->validateMySqlDate($hour_begin)) {
+            throw new HTTPException(
+                'Bad Request',
+                400,
+                array (
+                    'dev' => 'format de date incorrecte',
+                    'internalCode' => 'SpiritErrorProfilSetBirthday',
+                    'more' => 'there is no more here sorry'
+                )
+            );
+        } else if (strtotime($hour_begin) >= strtotime('now')) {
+            throw new HTTPException(
+                'Bad Request',
+                400,
+                array (
+                    'dev' => 'Vous avez saisie la date du jour !',
+                    'internalCode' => 'SpiritErrorProfilSetBirthday',
+                    'more' => strtotime($hour_begin) . " >= " . strtotime('now')
+                )
+            );
+        }
+        
         $this->hour_begin = $hour_begin;
 
         return $this;
@@ -307,6 +350,12 @@ class Event extends \Phalcon\Mvc\Model
     public static function findFirst($parameters = null)
     {
         return parent::findFirst($parameters);
+    }
+    
+    private function validateMySqlDate($date, $format = 'Y-m-d')
+    {
+        $d = DateTime::createFromFormat($format, $date);
+        return $d && $d->format($format) == $date;
     }
 
 }
