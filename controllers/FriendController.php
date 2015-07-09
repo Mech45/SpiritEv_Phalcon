@@ -30,6 +30,7 @@ class FriendController extends RESTController {
 
 
     private function genericGet($owner_id) {
+        $array_to_merge = [];
         $conditions_pending_local = "profile_id = :id: AND token IS NULL AND validation_invitation_date IS NULL";
         $parameters_local = array(
                         "id" => $owner_id
@@ -48,24 +49,52 @@ class FriendController extends RESTController {
                                                     $conditions_pending_ext,
                                                     "bind" => $parameters_ext
                                                 ));
-        if ($results_confirmed_byprofile != NULL)
+        if (isset($results_confirmed_byprofile))// != NULL)
         {
           $data_confirmed_byprofile = $this->fetch_data_to_array($results_confirmed_byprofile, 0);
+          $array_to_merge[0] = $data_confirmed_byprofile;
         }
-        if ($results_confirmed_byprofile != NULL)
+        if (isset($results_confirmed_byprofile))// != NULL)
         {
           $data_confirmed_byguest = $this->fetch_data_to_array($results_confirmed_byguest, 1);
+          $array_to_merge[1] = $data_confirmed_byguest;
         }
-        if ($results_pending_local != NULL)
+        if (isset($results_pending_local))// != NULL)
         {
           $data_pending_local = $this->fetch_data_to_array($results_pending_local, 2);
+          $array_to_merge[2] = $data_pending_local;
         }
-        if ($results_pending_ext != NULL)
+        if (isset($results_pending_ext))// != NULL)
         {
           $data_pending_ext = $this->fetch_data_to_array($results_pending_ext, 3);
+          $array_to_merge[3] = $data_pending_ext;
         }
-        return (array_merge($data_confirmed_byprofile, $data_confirmed_byguest, $data_pending_local, $data_pending_ext));
+        return ($this->merging_array($array_to_merge));
     }
+
+
+    private function merging_array($array_to_merge)
+    {
+      $trigger_array = 0;
+      $array_merged = [];
+      foreach ($array_to_merge as $key => $array)
+      {
+        if ($trigger_array == 0)
+        {
+          if (isset($array))
+          {
+            $array_merged = $array;
+            $trigger_array = 1;
+          }
+        }
+        elseif ($trigger_array == 1 && (isset($array)))
+        {
+          $array_merged = array_merge($array_merged, $array);
+        }
+      }
+      return ($array_merged);
+    }
+
 
     private function fetch_data_to_array($results, $trigger)
     {
