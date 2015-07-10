@@ -49,22 +49,22 @@ class FriendController extends RESTController {
                                                     $conditions_pending_ext,
                                                     "bind" => $parameters_ext
                                                 ));
-        if (isset($results_confirmed_byprofile))// != NULL)
+        if (isset($results_confirmed_byprofile))
         {
           $data_confirmed_byprofile = $this->fetch_data_to_array($results_confirmed_byprofile, 0);
           $array_to_merge[0] = $data_confirmed_byprofile;
         }
-        if (isset($results_confirmed_byprofile))// != NULL)
+        if (isset($results_confirmed_byprofile))
         {
           $data_confirmed_byguest = $this->fetch_data_to_array($results_confirmed_byguest, 1);
           $array_to_merge[1] = $data_confirmed_byguest;
         }
-        if (isset($results_pending_local))// != NULL)
+        if (isset($results_pending_local))
         {
           $data_pending_local = $this->fetch_data_to_array($results_pending_local, 2);
           $array_to_merge[2] = $data_pending_local;
         }
-        if (isset($results_pending_ext))// != NULL)
+        if (isset($results_pending_ext))
         {
           $data_pending_ext = $this->fetch_data_to_array($results_pending_ext, 3);
           $array_to_merge[3] = $data_pending_ext;
