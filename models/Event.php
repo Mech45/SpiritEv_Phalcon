@@ -211,7 +211,7 @@ class Event extends \Phalcon\Mvc\Model {
         } else if (strtotime($hour_end) <= strtotime('now')) {
             throw new HTTPException(
                 'Bad Request', 400, array(
-                'dev' => 'Vous avez saisie une date passée',
+                'dev' => 'Vous avez saisi une date passée',
                 'internalCode' => 'SpiritErrorEventSetHourBegin',
                 'more' => strtotime($hour_end) . " < " . strtotime('now')
                 )
