@@ -31,6 +31,14 @@ class FriendController extends RESTController {
 
     private function genericGet($owner_id) {
         $array_to_merge = [];
+        $conditions_all_profile = "profile_id= :id:";
+        $parameters_all_profile = array(
+                        "id" => $owner_id
+                    );
+        $conditions_all_guest = "profile_friend_id1= :id:";
+        $parameters_all_guest = array(
+                        "id" => $owner_id
+                    );
         $conditions_pending_local = "profile_id = :id: AND token IS NULL AND validation_invitation_date IS NULL";
         $parameters_local = array(
                         "id" => $owner_id
@@ -39,8 +47,14 @@ class FriendController extends RESTController {
         $parameters_ext = array(
                         "id" => $owner_id
                     );
-        $results_confirmed_byprofile = ProfileHasProfile::find("profile_id=" . $owner_id);
-        $results_confirmed_byguest = ProfileHasProfile::find("profile_friend_id1=" . $owner_id);
+        $results_confirmed_byprofile = ProfileHasProfile::find(array(
+                                                    $conditions_all_profile,
+                                                    "bind" => $parameters_all_profile
+                                                ));
+        $results_confirmed_byguest = ProfileHasProfile::find(array(
+                                                    $conditions_all_guest,
+                                                    "bind" => $parameters_all_guest
+                                                ));
         $results_pending_local = Invitation::find(array(
                                                     $conditions_pending_local,
                                                     "bind" => $parameters_local
