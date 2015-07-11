@@ -1,6 +1,8 @@
 <?php
 namespace PhalconRest\Models;
-use \PhalconRest\Exceptions\HTTPException;
+
+use DateTime;
+use PhalconRest\Exceptions\HTTPException;
 
 class Profile extends \Phalcon\Mvc\Model
 {
@@ -170,7 +172,7 @@ class Profile extends \Phalcon\Mvc\Model
      * Allows to query a set of records that match the specified conditions
      *
      * @param mixed $parameters
-     * @return Profile[]
+     * @return ProfileHasProfile[]
      */
     public static function find($parameters = null)
     {
@@ -181,7 +183,7 @@ class Profile extends \Phalcon\Mvc\Model
      * Allows to query the first record that match the specified conditions
      *
      * @param mixed $parameters
-     * @return Profile
+     * @return ProfileHasProfile
      */
     public static function findFirst($parameters = null)
     {

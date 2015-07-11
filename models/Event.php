@@ -1,9 +1,11 @@
 <?php
-namespace PhalconRest\Models;
-use \PhalconRest\Exceptions\HTTPException;
 
-class Event extends \Phalcon\Mvc\Model
-{
+namespace PhalconRest\Models;
+
+use DateTime;
+use PhalconRest\Exceptions\HTTPException;
+
+class Event extends \Phalcon\Mvc\Model {
 
     /**
      *
@@ -65,8 +67,7 @@ class Event extends \Phalcon\Mvc\Model
      * @param integer $id
      * @return $this
      */
-    public function setId($id)
-    {
+    public function setId($id) {
         $this->id = $id;
 
         return $this;
@@ -78,8 +79,7 @@ class Event extends \Phalcon\Mvc\Model
      * @param string $date_create
      * @return $this
      */
-    public function setDateCreate($date_create)
-    {
+    public function setDateCreate($date_create) {
         $this->date_create = $date_create;
 
         return $this;
@@ -91,8 +91,7 @@ class Event extends \Phalcon\Mvc\Model
      * @param string $date_update
      * @return $this
      */
-    public function setDateUpdate($date_update)
-    {
+    public function setDateUpdate($date_update) {
         $this->date_update = $date_update;
 
         return $this;
@@ -104,8 +103,7 @@ class Event extends \Phalcon\Mvc\Model
      * @param string $description
      * @return $this
      */
-    public function setDescription($description)
-    {
+    public function setDescription($description) {
         $this->description = $description;
 
         return $this;
@@ -117,18 +115,15 @@ class Event extends \Phalcon\Mvc\Model
      * @param string $name
      * @return $this
      */
-public function setName($name)
-    {
+    public function setName($name) {
         //The name is too short?
         if (strlen($name) < 1) {
             throw new HTTPException(
-                'Bad Request',
-                400,
-                array(
-                    'dev' => 'Le nom doit comporter au moins 1 char',
-                    'internalCode' => 'SpiritErrorProfilSetName',
-                    'more' => 'there is no more here sorry'
-                )
+            'Bad Request', 400, array(
+        'dev' => 'Le nom doit comporter au moins 1 char',
+        'internalCode' => 'SpiritErrorProfilSetName',
+        'more' => 'there is no more here sorry'
+            )
             );
         }
 //        if (!preg_match("#^\p{L}+$#u",$name)) {
@@ -151,8 +146,7 @@ public function setName($name)
      * @param string $location
      * @return $this
      */
-    public function setLocation($location)
-    {
+    public function setLocation($location) {
         $this->location = $location;
 
         return $this;
@@ -164,8 +158,7 @@ public function setName($name)
      * @param integer $actif
      * @return $this
      */
-    public function setActif($actif)
-    {
+    public function setActif($actif) {
         $this->actif = $actif;
 
         return $this;
@@ -177,30 +170,24 @@ public function setName($name)
      * @param string $hour_begin
      * @return $this
      */
-    public function setHourBegin($hour_begin)
-    {
-        if (!$this->validateMySqlDate($hour_begin)) {
+    public function setHourBegin($hour_begin) {
+        if (!$this->validateMySqlDate($hour_begin, "Y-m-d H:i:s")) {
             throw new HTTPException(
-                'Bad Request',
-                400,
-                array (
-                    'dev' => 'format de date incorrecte',
-                    'internalCode' => 'SpiritErrorProfilSetBirthday',
-                    'more' => 'there is no more here sorry'
-                )
+            'Bad Request', 400, array(
+        'dev' => 'format de date incorrecte',
+        'internalCode' => 'SpiritErrorProfilSetBirthday',
+        'more' => 'there is no more here sorry'
+            )
             );
-        } else if (strtotime($hour_begin) >= strtotime('now')) {
+        } else if (strtotime($hour_begin) <= strtotime('now')) {
             throw new HTTPException(
-                'Bad Request',
-                400,
-                array (
-                    'dev' => 'Vous avez saisie la date du jour !',
-                    'internalCode' => 'SpiritErrorProfilSetBirthday',
-                    'more' => strtotime($hour_begin) . " >= " . strtotime('now')
-                )
+            'Bad Request', 400, array(
+        'dev' => 'Vous avez saisie une date passée',
+        'internalCode' => 'SpiritErrorEventSetHourBegin',
+        'more' => strtotime($hour_begin) . " < " . strtotime('now')
+            )
             );
         }
-        
         $this->hour_begin = $hour_begin;
 
         return $this;
@@ -212,8 +199,25 @@ public function setName($name)
      * @param string $hour_end
      * @return $this
      */
-    public function setHourEnd($hour_end)
-    {
+    public function setHourEnd($hour_end) {
+        if (!$this->validateMySqlDate($hour_end, "Y-m-d H:i:s")) {
+            throw new HTTPException(
+                'Bad Request', 400, array(
+                    'dev' => 'format de date incorrecte',
+                    'internalCode' => 'SpiritErrorProfilSetBirthday',
+                    'more' => 'there is no more here sorry'
+                )
+            );
+        } else if (strtotime($hour_end) <= strtotime('now')) {
+            throw new HTTPException(
+                'Bad Request', 400, array(
+                'dev' => 'Vous avez saisie une date passée',
+                'internalCode' => 'SpiritErrorEventSetHourBegin',
+                'more' => strtotime($hour_end) . " < " . strtotime('now')
+                )
+            );
+        }
+
         $this->hour_end = $hour_end;
 
         return $this;
@@ -224,8 +228,7 @@ public function setName($name)
      *
      * @return integer
      */
-    public function getId()
-    {
+    public function getId() {
         return $this->id;
     }
 
@@ -234,8 +237,7 @@ public function setName($name)
      *
      * @return string
      */
-    public function getDateCreate()
-    {
+    public function getDateCreate() {
         return $this->date_create;
     }
 
@@ -244,8 +246,7 @@ public function setName($name)
      *
      * @return string
      */
-    public function getDateUpdate()
-    {
+    public function getDateUpdate() {
         return $this->date_update;
     }
 
@@ -254,8 +255,7 @@ public function setName($name)
      *
      * @return string
      */
-    public function getDescription()
-    {
+    public function getDescription() {
         return $this->description;
     }
 
@@ -264,8 +264,7 @@ public function setName($name)
      *
      * @return string
      */
-    public function getName()
-    {
+    public function getName() {
         return $this->name;
     }
 
@@ -274,8 +273,7 @@ public function setName($name)
      *
      * @return string
      */
-    public function getLocation()
-    {
+    public function getLocation() {
         return $this->location;
     }
 
@@ -284,8 +282,7 @@ public function setName($name)
      *
      * @return integer
      */
-    public function getActif()
-    {
+    public function getActif() {
         return $this->actif;
     }
 
@@ -294,8 +291,7 @@ public function setName($name)
      *
      * @return string
      */
-    public function getHourBegin()
-    {
+    public function getHourBegin() {
         return $this->hour_begin;
     }
 
@@ -304,16 +300,14 @@ public function setName($name)
      *
      * @return string
      */
-    public function getHourEnd()
-    {
+    public function getHourEnd() {
         return $this->hour_end;
     }
 
     /**
      * Initialize method for model.
      */
-    public function initialize()
-    {
+    public function initialize() {
         $this->hasMany('id', 'Checklist', 'event_id', array('alias' => 'Checklist'));
         $this->hasMany('id', 'Comment', 'event_id', array('alias' => 'Comment'));
         $this->hasMany('id', 'EventHasRight', 'event_id', array('alias' => 'EventHasRight'));
@@ -325,8 +319,7 @@ public function setName($name)
      *
      * @return string
      */
-    public function getSource()
-    {
+    public function getSource() {
         return 'event';
     }
 
@@ -336,8 +329,7 @@ public function setName($name)
      * @param mixed $parameters
      * @return Event[]
      */
-    public static function find($parameters = null)
-    {
+    public static function find($parameters = null) {
         return parent::find($parameters);
     }
 
@@ -347,13 +339,11 @@ public function setName($name)
      * @param mixed $parameters
      * @return Event
      */
-    public static function findFirst($parameters = null)
-    {
+    public static function findFirst($parameters = null) {
         return parent::findFirst($parameters);
     }
-    
-    private function validateMySqlDate($date, $format = 'Y-m-d')
-    {
+
+    private function validateMySqlDate($date, $format = 'Y-m-d') {
         $d = DateTime::createFromFormat($format, $date);
         return $d && $d->format($format) == $date;
     }

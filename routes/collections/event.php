@@ -31,8 +31,7 @@ return call_user_func(function(){
 	// $id will be passed as a parameter to the Controller's specified function
 	$eventCollection->get('/{id:[0-9]+}', 'getOne');
 	$eventCollection->head('/{id:[0-9]+}', 'getOne');
-	$eventCollection->post('/', 'post');
-	$eventCollection->post('/save-first-step', 'saveFirstStep');
+	$eventCollection->post('/', 'saveFirstStep');
 	$eventCollection->delete('/{id:[0-9]+}', 'delete');
 	$eventCollection->put('/{id:[0-9]+}', 'put');
 	$eventCollection->patch('/{id:[0-9]+}', 'patch');

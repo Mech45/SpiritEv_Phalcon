@@ -2,13 +2,13 @@
 
 namespace PhalconRest\Controllers;
 
-use \PhalconRest\Exceptions\HTTPException as HTTPException;
-use \Phalcon\Http\Request as Request;
-use PhalconRest\Models\User;
+use Phalcon\Http\Request as Request;
+use PhalconRest\Exceptions\HTTPException as HTTPException;
 use PhalconRest\Models\Event;
-use PhalconRest\Models\Civility;
-use PhalconRest\Models\Language;
 use PhalconRest\Models\Media;
+use PhalconRest\Models\ProfileHasProfile;
+use PhalconRest\Models\User;
+use PhalconRest\Responses\Response;
 
 class EventController extends RESTController {
 
@@ -75,37 +75,47 @@ class EventController extends RESTController {
         if ($request->isPost() == true) {
 
             $name = $this->request->getPost("name");
+            $location = $this->request->getPost("location");
             $hour_begin = $this->request->getPost("hour_begin");
             $hour_end = $this->request->getPost("hour_end");
 
             if ($name)
                 $event->setName($name);
-            if ($hour_begin)
-                $event->setName($hour_begin);
-            if ($hour_end)
-                $event->setName($hour_end);
+            if ($location)
+                $event->setLocation($location);
+            
+            if (strtotime($hour_begin) >= strtotime($hour_end)){
+                throw new HTTPException(
+                    'Bad Request', 400, array(
+                    'dev' => 'La date de fin doit être supérieur à la date de début !',
+                    'internalCode' => 'SpiritErrorSaveFirstStep',
+                    'more' => 'there is no more here sorry'
+                    )
+                );
+            }else{
+                if ($hour_begin)
+                    $event->setHourBegin($hour_begin);
+                if ($hour_end)
+                    $event->setHourEnd($hour_end);
+            }
 
             $event->setDateCreate(date('Y-m-d H:i:s'));
             $event->setActif(0);
 
             if ($event->save() == false) {
-                echo "Umh, We can't store robots right now: \n";
-                foreach ($event->getMessages() as $message) {
-                    echo $message, "\n";
-                }
+                throw new HTTPException(
+                    'Bad Request', 400, array(
+                    'dev' => 'Champ(s) vide',
+                    'internalCode' => 'SpiritErrorSaveFirstStep',
+                    'more' => 'there is no more here sorry'
+                    )
+                );
             } else {
-                echo "Great, a new robot was saved successfully!";
-                var_dump($event->getId());
+                return array(
+                    'id' => $event->getId());
             }
-//                
-//            
-//            var_dump($hour_begin);
-//            var_dump($hour_end);exit;
-//            var_dump($this->request->getPost("test"));
-//            exit;
         }
 
-//        var_dump($dataEvent);exit;
     }
 
     public function put($id) {
