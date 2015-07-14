@@ -20,7 +20,7 @@ class FriendController extends RESTController {
     // private $baseUrl = "http://clemgeek1.xyz/img/";
 
    protected $allowedFields = array (
-           'search' => array('name', 'firstname', 'username', "civility"),
+           'search' => array('name', 'firstname', 'username', "civility", "status"),
            'partials' => array('name', 'firstname', 'username', "civility")
    );
 
@@ -112,7 +112,7 @@ class FriendController extends RESTController {
 
     private function fetch_data_to_array($results, $trigger)
     {
-      $status = "Status confirmé";
+      $status = "confirmed";
       if ($trigger == 0)
         $id_to_use = "profile_friend_id1";
       elseif ($trigger == 1)
@@ -120,7 +120,7 @@ class FriendController extends RESTController {
       elseif ($trigger == 2)
       {
         $id_to_use = "guest_id";
-        $status = "Demande en cours";
+        $status = "pending";
       }
       elseif ($trigger == 3)
       {
@@ -128,7 +128,7 @@ class FriendController extends RESTController {
             $data[] = array (
                 "mail" => $result->email,
                 "used_trigger" => "guest_id",
-                "status" => "Demande en cours"
+                "status" => "pending"
             );
           }
       }
@@ -138,7 +138,7 @@ class FriendController extends RESTController {
             $data[] = array (
                 "name" => Profile::findFirst($result->$id_to_use)->name,
                 "firstname" => Profile::findFirst($result->$id_to_use)->firstname,
-                "used_trigger" => $id_to_use,
+                // "used_trigger" => $id_to_use,
                 "username" => User::findFirst("profile_id=" . ($result->$id_to_use))->username,
                 "status" => $status,
                 "picture" => array (
