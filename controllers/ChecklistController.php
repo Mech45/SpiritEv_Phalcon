@@ -6,6 +6,7 @@ use Phalcon\Http\Request as Request;
 use PhalconRest\Exceptions\HTTPException as HTTPException;
 use PhalconRest\Models\Checklist;
 use PhalconRest\Models\Event;
+use PhalconRest\Models\Ressource;
 
 class ChecklistController extends RESTController {
 
@@ -68,7 +69,6 @@ class ChecklistController extends RESTController {
                 )
             );
         }
-//        var_dump(isset($datas->checklist_id));exit;
         if (isset($datas->checklist_id)) {
             
             $checklist = Checklist::findFirst("id = " . $datas->checklist_id);
@@ -80,15 +80,14 @@ class ChecklistController extends RESTController {
                         'more' => 'checklist_id == ' . $datas->checklist_id
                     )
                 );
-            } else
-                $idChecklist = $checklist->getId();
-        }else {
-            $newChecklist = new Checklist();
-            $newChecklist->setEventId($id);
-            if (isset($datas->name)) {
-                $newChecklist->setName($datas->name);
             }
-            if ($newChecklist->save() == false) {
+        }else {
+            $checklist = new Checklist();
+            $checklist->setEventId($id);
+            if (isset($datas->name)) {
+                $checklist->setName($datas->name);
+            }
+            if ($checklist->save() == false) {
                 throw new HTTPException(
                     'Bad Request', 400, array(
                         'dev' => 'Champ(s) vide',
@@ -96,12 +95,65 @@ class ChecklistController extends RESTController {
                         'more' => 'there is no more here sorry'
                     )
                 );
-            } else
-                $idChecklist = $newChecklist->getId();
+            }
         }
-
-        var_dump($idChecklist);
+        
+//        if (isset($datas->items)) {
+//            $items = $datas->items;
+//            foreach($items as $item){
+//            
+//                $ressource = Ressource::findFirst("id = " . $item->ressource_id);
+//                if (!$ressource) {
+//                    throw new HTTPException(
+//                        'Bad Request', 400, array(
+//                            'dev' => 'Aucune ressource trouvée',
+//                            'internalCode' => 'SpiritErrorChecklistControllerPut',
+//                            'more' => 'ressource_id == ' . $item->ressource_id
+//                        )
+//                    );
+//                }else {
+//                    
+//                    $checklist->setRessource($ressource);
+//                    
+//                    if ($checklist->save() == false) {
+//                        echo'ko';exit;
+//                        throw new HTTPException(
+//                            'Bad Request', 400, array(
+//                                'dev' => 'Champ(s) vide',
+//                                'internalCode' => 'SpiritErrorSaveFirstStep',
+//                                'more' => 'there is no more here sorry'
+//                            )
+//                        );
+//                    }else {
+//                        echo'ok';exit;
+//                    }
+//                }
+//            }
+//            
+//        }
+//        
         exit;
+        
+        
+//        foreach($items as $item){
+//            
+//            $ressource = Ressource::findFirst("id = " . $datas->checklist_id);
+//            if (!$checklist) {
+//                throw new HTTPException(
+//                    'Bad Request', 400, array(
+//                        'dev' => 'Aucune checklist trouvée',
+//                        'internalCode' => 'SpiritErrorChecklistControllerPut',
+//                        'more' => 'checklist_id == ' . $datas->checklist_id
+//                    )
+//                );
+//            } else
+//                $idChecklist = $checklist->getId();
+//            
+//        }
+//        
+
+//        var_dump($idChecklist);
+        
 //        if (isset($datas->name)) {
 //            $profil->setName($datas->name);
 //        } if (isset($datas->firstname)) {

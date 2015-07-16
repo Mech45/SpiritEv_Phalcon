@@ -133,4 +133,9 @@ class Checklist extends \Phalcon\Mvc\Model
         return parent::findFirst($parameters);
     }
 
+//    public function setRessource($ressource)
+//   {
+//    $this -> __set("ChecklistRessource", $ressource);   
+//
+//   }
 }
