@@ -55,20 +55,53 @@ class ChecklistController extends RESTController {
     }
 
     public function put($id) {
-//        $request = new Request();
-//        $datas = $request->getJsonRawBody();
-//        $event = event::findFirst("id = " . $id);
-//        if (!$event) {
-//            throw new HTTPException(
-//                'Bad Request',
-//                400,
-//                array (
-//                    'dev' => 'Aucun evenement trouvé',
-//                    'internalCode' => 'SpiritErrorEventControllerPut',
-//                    'more' => '$id == ' . $id
-//                )
-//            );
-//        }
+        $request = new Request();
+        $datas = $request->getJsonRawBody();
+
+        $event = Event::findFirst("id = " . $id);
+        if (!$event) {
+            throw new HTTPException(
+                'Bad Request', 400, array(
+                    'dev' => 'Aucun evenement trouvé',
+                    'internalCode' => 'SpiritErrorEventControllerPut',
+                    'more' => '$id == ' . $id
+                )
+            );
+        }
+//        var_dump(isset($datas->checklist_id));exit;
+        if (isset($datas->checklist_id)) {
+            
+            $checklist = Checklist::findFirst("id = " . $datas->checklist_id);
+            if (!$checklist) {
+                throw new HTTPException(
+                    'Bad Request', 400, array(
+                        'dev' => 'Aucune checklist trouvée',
+                        'internalCode' => 'SpiritErrorChecklistControllerPut',
+                        'more' => 'checklist_id == ' . $datas->checklist_id
+                    )
+                );
+            } else
+                $idChecklist = $checklist->getId();
+        }else {
+            $newChecklist = new Checklist();
+            $newChecklist->setEventId($id);
+            if (isset($datas->name)) {
+                $newChecklist->setName($datas->name);
+            }
+            if ($newChecklist->save() == false) {
+                throw new HTTPException(
+                    'Bad Request', 400, array(
+                        'dev' => 'Champ(s) vide',
+                        'internalCode' => 'SpiritErrorSaveFirstStep',
+                        'more' => 'there is no more here sorry'
+                    )
+                );
+            } else
+                $idChecklist = $newChecklist->getId();
+        }
+
+        var_dump($idChecklist);
+        exit;
 //        if (isset($datas->name)) {
 //            $profil->setName($datas->name);
 //        } if (isset($datas->firstname)) {
