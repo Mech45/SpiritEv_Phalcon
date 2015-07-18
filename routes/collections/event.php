@@ -14,7 +14,7 @@
 return call_user_func(function(){
         $eventCollection = new \Phalcon\Mvc\Micro\Collection();
 
-	$eventCollection->setPrefix('/event')
+	$eventCollection->setPrefix('/events')
         ->setHandler('\PhalconRest\Controllers\EventController')
     	->setLazy(true);
 
