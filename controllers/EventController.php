@@ -67,19 +67,14 @@ class EventController extends RESTController {
 
         $event = new Event();
         $request = new Request();
+        $datas = $request->getJsonRawBody();
 
-        if ($request->isPost() == true) {
-
-            $name = $this->request->getPost("name");
-            $location = $this->request->getPost("location");
-            $hour_begin = $this->request->getPost("hour_begin");
-            $hour_end = $this->request->getPost("hour_end");
-
-            if ($name)
-                $event->setName($name);
-            if ($location)
-                $event->setLocation($location);
-            if (strtotime($hour_begin) >= strtotime($hour_end)){
+        if (isset($datas->name))
+            $event->setName($datas->name);
+        if (isset($datas->location))
+            $event->setLocation($datas->location);
+        if (isset($datas->hour_begin) && isset($datas->hour_end)){
+            if (strtotime($datas->hour_begin) >= strtotime($datas->hour_end)){
                 throw new HTTPException(
                     'Bad Request', 400, array(
                     'dev' => 'La date de fin doit être supérieur à la date de début !',
@@ -88,29 +83,26 @@ class EventController extends RESTController {
                     )
                 );
             }else{
-                if ($hour_begin)
-                    $event->setHourBegin($hour_begin);
-                if ($hour_end)
-                    $event->setHourEnd($hour_end);
-            }
-
-            $event->setDateCreate(date('Y-m-d H:i:s'));
-            $event->setActif(0);
-
-            if ($event->save() == false) {
-                throw new HTTPException(
-                    'Bad Request', 400, array(
-                    'dev' => 'Champ(s) vide',
-                    'internalCode' => 'SpiritErrorSaveFirstStep',
-                    'more' => 'there is no more here sorry'
-                    )
-                );
-            } else {
-                return array(
-                    'id' => $event->getId());
+                $event->setHourBegin($datas->hour_begin);
+                $event->setHourEnd($datas->hour_end);
             }
         }
 
+        $event->setDateCreate(date('Y-m-d H:i:s'));
+        $event->setActif(0);
+
+        if ($event->save() == false) {
+            throw new HTTPException(
+                'Bad Request', 400, array(
+                'dev' => 'Champ(s) vide',
+                'internalCode' => 'SpiritErrorSaveFirstStep',
+                'more' => 'there is no more here sorry'
+                )
+            );
+        } else {
+            return array(
+                'id' => $event->getId());
+        }
     }
 
     public function put($id) {
