@@ -3,8 +3,10 @@
 namespace PhalconRest\Controllers;
 
 use Phalcon\Http\Request as Request;
+use Phalcon\Mvc\Model\Transaction\Manager as TransactionManager;
 use PhalconRest\Exceptions\HTTPException as HTTPException;
 use PhalconRest\Models\Checklist;
+use PhalconRest\Models\ChecklistRessource;
 use PhalconRest\Models\Event;
 use PhalconRest\Models\Ressource;
 
@@ -57,8 +59,11 @@ class ChecklistController extends RESTController {
 
     public function put($id) {
         $request = new Request();
+        $transactionManager = new TransactionManager();
         $datas = $request->getJsonRawBody();
+        $transaction = $transactionManager->get();
 
+        // Récupération de l'événement
         $event = Event::findFirst("id = " . $id);
         if (!$event) {
             throw new HTTPException(
@@ -69,6 +74,7 @@ class ChecklistController extends RESTController {
                 )
             );
         }
+        // Si la checklist n'existe pas, on la créer
         if (isset($datas->checklist_id)) {
             
             $checklist = Checklist::findFirst("id = " . $datas->checklist_id);
@@ -98,130 +104,60 @@ class ChecklistController extends RESTController {
             }
         }
         
-//        if (isset($datas->items)) {
-//            $items = $datas->items;
-//            foreach($items as $item){
-//            
-//                $ressource = Ressource::findFirst("id = " . $item->ressource_id);
-//                if (!$ressource) {
-//                    throw new HTTPException(
-//                        'Bad Request', 400, array(
-//                            'dev' => 'Aucune ressource trouvée',
-//                            'internalCode' => 'SpiritErrorChecklistControllerPut',
-//                            'more' => 'ressource_id == ' . $item->ressource_id
-//                        )
-//                    );
-//                }else {
-//                    
-//                    $checklist->setRessource($ressource);
-//                    
-//                    if ($checklist->save() == false) {
-//                        echo'ko';exit;
-//                        throw new HTTPException(
-//                            'Bad Request', 400, array(
-//                                'dev' => 'Champ(s) vide',
-//                                'internalCode' => 'SpiritErrorSaveFirstStep',
-//                                'more' => 'there is no more here sorry'
-//                            )
-//                        );
-//                    }else {
-//                        echo'ok';exit;
-//                    }
-//                }
-//            }
-//            
-//        }
-//        
-        exit;
-        
-        
-//        foreach($items as $item){
-//            
-//            $ressource = Ressource::findFirst("id = " . $datas->checklist_id);
-//            if (!$checklist) {
-//                throw new HTTPException(
-//                    'Bad Request', 400, array(
-//                        'dev' => 'Aucune checklist trouvée',
-//                        'internalCode' => 'SpiritErrorChecklistControllerPut',
-//                        'more' => 'checklist_id == ' . $datas->checklist_id
-//                    )
-//                );
-//            } else
-//                $idChecklist = $checklist->getId();
-//            
-//        }
-//        
+        if (isset($datas->items)) {
+            $items = $datas->items;
+            try {
+                foreach($items as $item){
 
-//        var_dump($idChecklist);
-        
-//        if (isset($datas->name)) {
-//            $profil->setName($datas->name);
-//        } if (isset($datas->firstname)) {
-//            $profil->setFirstname($datas->firstname);
-//        } if (isset($datas->username)) {
-//            $user = User::findFirst("profile_id=" . $id);
-//            if (!$user) {
-//                throw new HTTPException(
-//                    'Bad Request',
-//                    400,
-//                    array (
-//                        'dev' => 'Aucun utilisateur trouvé',
-//                        'internalCode' => 'SpiritErrorProfilControllerPut',
-//                        'more' => '$profile_id == ' . $id
-//                    )
-//                );
-//            }
-//            $user->username = $datas->username;
-//            $user->update();
-//        } if (isset($datas->email)) {
-//            $user = User::findFirst("profile_id=" . $id);
-//            if (!$user) {
-//                throw new HTTPException(
-//                    'Bad Request',
-//                    400,
-//                    array (
-//                        'dev' => 'Aucun utilisateur trouvé',
-//                        'internalCode' => 'SpiritErrorProfilControllerPut',
-//                        'more' => '$profile_id == ' . $id
-//                    )
-//                );
-//            }
-//            $user->email = $datas->email;
-//            $user->update();
-//        } if (isset($datas->civility)) {
-//            $civility = Civility::findFirstByName($datas->civility);
-//            if (!$civility) {
-//                throw new HTTPException (
-//                    'Bad Request',
-//                    400,
-//                    array (
-//                        'dev' => 'Aucune civility trouvée',
-//                        'internalCode' => 'SpiritErrorProfilControllerPut',
-//                        'more' => '$civility_id == ' . $id
-//                    )
-//                );
-//            }
-//            $profil->civility_id = $civility->id;
-//        } if (isset($datas->birthday)) {
-//            $profil->setBirthday($datas->birthday);
-//        } if (isset($datas->language)) {
-//            $language = Language::findFirstByCode($datas->language);
-//            if (!$language) {
-//                throw new HTTPException (
-//                    'Bad Request',
-//                    400,
-//                    array (
-//                        'dev' => 'Aucune civility trouvée',
-//                        'internalCode' => 'SpiritErrorProfilControllerPut',
-//                        'more' => '$civility_id == ' . $id
-//                    )
-//                );
-//            }
-//            $profil->language_id = $language->id;
-//        } if (isset($datas->password) && isset($datas->newpassword) && isset($datas->renewpassword)) {
-//            $this->setNewPassword($id, $datas->password, $datas->newpassword, $datas->renewpassword);
-//        }
-//        $profil->update();
+                    // Récupération de la ressource
+                    $ressource = Ressource::findFirst("id = " . $item->ressource_id);
+                    if (!$ressource) {
+                        throw new HTTPException(
+                            'Bad Request', 400, array(
+                                'dev' => 'Aucune ressource trouvée',
+                                'internalCode' => 'SpiritErrorChecklistControllerPut',
+                                'more' => 'ressource_id == ' . $item->ressource_id
+                            )
+                        );
+                    }else {
+                        
+                        if (isset($item->quantity)) {
+                            
+                            $checklistRessource = new ChecklistRessource();
+
+//                            $resultsRessources = ChecklistRessource::findFirst(array(
+//                                array("ressource_id = 2"),
+//                            ));
+//                            
+//                            
+//                            var_dump($resultsRessources->getId());
+//                            
+//                            foreach ($resultsRessources as $res){
+//                                var_dump($res);
+//                            }
+//                            
+//                            
+//                            exit;
+
+                            $checklistRessource->setChecklistId($checklist->getId());
+                            $checklistRessource->setRessourceId($ressource->getId());
+                            $checklistRessource->setQuantity($item->quantity);
+
+                            if ($checklistRessource->save() == false) {
+                                $transaction->rollback("Can't save checklist ressource");
+                            }
+
+                        }
+                    }
+                }
+                $transaction->commit();
+            } catch (Phalcon\Mvc\Model\Transaction\Failed $e) {
+                        echo 'Failed, reason: ', $e->getMessage();
+            }
+        }
+        var_dump("done");exit;
+        exit;
+
 //        return array('Put / stub');
     }
 
