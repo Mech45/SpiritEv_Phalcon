@@ -61,52 +61,47 @@ class ChecklistController extends RESTController {
         $request = new Request();
         $transactionManager = new TransactionManager();
         $datas = $request->getJsonRawBody();
+        // Création d'une transaction, il faut setter l'objet transaction à chaque entité
         $transaction = $transactionManager->get();
+        try {
+            // Récupération de l'événement
+            $event = Event::findFirst("id = " . $id);
+            if (!$event) {
+                throw new HTTPException(
+                    'Bad Request', 400, array(
+                        'dev' => 'Aucun evenement trouvé',
+                        'internalCode' => 'SpiritErrorEventControllerPut',
+                        'more' => '$id == ' . $id
+                    )
+                );
+            }
+            // Si la checklist n'existe pas, on la créer
+            if (isset($datas->checklist_id)) {
 
-        // Récupération de l'événement
-        $event = Event::findFirst("id = " . $id);
-        if (!$event) {
-            throw new HTTPException(
-                'Bad Request', 400, array(
-                    'dev' => 'Aucun evenement trouvé',
-                    'internalCode' => 'SpiritErrorEventControllerPut',
-                    'more' => '$id == ' . $id
-                )
-            );
-        }
-        // Si la checklist n'existe pas, on la créer
-        if (isset($datas->checklist_id)) {
-            
-            $checklist = Checklist::findFirst("id = " . $datas->checklist_id);
-            if (!$checklist) {
-                throw new HTTPException(
-                    'Bad Request', 400, array(
-                        'dev' => 'Aucune checklist trouvée',
-                        'internalCode' => 'SpiritErrorChecklistControllerPut',
-                        'more' => 'checklist_id == ' . $datas->checklist_id
-                    )
-                );
+                $checklist = Checklist::findFirst("id = " . $datas->checklist_id);
+                if (!$checklist) {
+                    throw new HTTPException(
+                        'Bad Request', 400, array(
+                            'dev' => 'Aucune checklist trouvée',
+                            'internalCode' => 'SpiritErrorChecklistControllerPut',
+                            'more' => 'checklist_id == ' . $datas->checklist_id
+                        )
+                    );
+                }
+            }else {
+                $checklist = new Checklist();
+                $checklist->setTransaction($transaction);
+                $checklist->setEventId($id);
+                if (isset($datas->name)) {
+                    $checklist->setName($datas->name);
+                }
+                if ($checklist->save() == false) {
+                    $transaction->rollback("Can't save checklist");
+                }
             }
-        }else {
-            $checklist = new Checklist();
-            $checklist->setEventId($id);
-            if (isset($datas->name)) {
-                $checklist->setName($datas->name);
-            }
-            if ($checklist->save() == false) {
-                throw new HTTPException(
-                    'Bad Request', 400, array(
-                        'dev' => 'Champ(s) vide',
-                        'internalCode' => 'SpiritErrorSaveFirstStep',
-                        'more' => 'there is no more here sorry'
-                    )
-                );
-            }
-        }
-        
-        if (isset($datas->items)) {
-            $items = $datas->items;
-            try {
+
+            if (isset($datas->items)) {
+                $items = $datas->items;
                 foreach($items as $item){
 
                     // Récupération de la ressource
@@ -120,25 +115,26 @@ class ChecklistController extends RESTController {
                             )
                         );
                     }else {
-                        
+
                         if (isset($item->quantity)) {
-                            
+
                             $checklistRessource = new ChecklistRessource();
 
-//                            $resultsRessources = ChecklistRessource::findFirst(array(
-//                                array("ressource_id = 2"),
-//                            ));
-//                            
-//                            
-//                            var_dump($resultsRessources->getId());
-//                            
-//                            foreach ($resultsRessources as $res){
-//                                var_dump($res);
-//                            }
-//                            
-//                            
-//                            exit;
+    //                            $resultsRessources = ChecklistRessource::findFirst(array(
+    //                                array("ressource_id = 2"),
+    //                            ));
+    //                            
+    //                            
+    //                            var_dump($resultsRessources->getId());
+    //                            
+    //                            foreach ($resultsRessources as $res){
+    //                                var_dump($res);
+    //                            }
+    //                            
+    //                            
+    //                            exit;
 
+                            $checklistRessource->setTransaction($transaction);
                             $checklistRessource->setChecklistId($checklist->getId());
                             $checklistRessource->setRessourceId($ressource->getId());
                             $checklistRessource->setQuantity($item->quantity);
@@ -146,14 +142,14 @@ class ChecklistController extends RESTController {
                             if ($checklistRessource->save() == false) {
                                 $transaction->rollback("Can't save checklist ressource");
                             }
-
                         }
                     }
                 }
                 $transaction->commit();
-            } catch (Phalcon\Mvc\Model\Transaction\Failed $e) {
-                        echo 'Failed, reason: ', $e->getMessage();
             }
+
+        } catch (Phalcon\Mvc\Model\Transaction\Failed $e) {
+            echo 'Failed, reason: ', $e->getMessage();
         }
         var_dump("done");exit;
         exit;
