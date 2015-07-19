@@ -158,7 +158,6 @@ class ChecklistController extends RESTController {
         } catch (Phalcon\Mvc\Model\Transaction\Failed $e) {
             echo 'Failed, reason: ', $e->getMessage();
         }
-        var_dump("done");exit;
 
         return array('Put / stub');
     }
