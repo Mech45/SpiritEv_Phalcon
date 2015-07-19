@@ -14,7 +14,7 @@
 return call_user_func(function(){
         $friendCollection = new \Phalcon\Mvc\Micro\Collection();
 
-	$friendCollection->setPrefix('/friend')
+	$friendCollection->setPrefix('/profile')
         ->setHandler('\PhalconRest\Controllers\FriendController')
     	->setLazy(true);
 
@@ -29,8 +29,8 @@ return call_user_func(function(){
 	$friendCollection->head('/', 'get');
 
 	// $id will be passed as a parameter to the Controller's specified function
-	$friendCollection->get('/{id:[0-9]+}', 'getOne');
-	$friendCollection->head('/{id:[0-9]+}', 'getOne');
+	$friendCollection->get('/{id:[0-9]+}/friends', 'getOne');
+	$friendCollection->head('/{id:[0-9]+}/friends', 'getOne');
 	$friendCollection->post('/', 'post');
 	$friendCollection->delete('/{id:[0-9]+}', 'delete');
 	$friendCollection->put('/{id:[0-9]+}', 'put');
