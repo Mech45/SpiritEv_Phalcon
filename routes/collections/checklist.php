@@ -14,7 +14,7 @@
 return call_user_func(function(){
         $checklistCollection = new \Phalcon\Mvc\Micro\Collection();
 
-	$checklistCollection->setPrefix('/checklist')
+	$checklistCollection->setPrefix('/checklists')
         ->setHandler('\PhalconRest\Controllers\ChecklistController')
     	->setLazy(true);
 
