@@ -57,7 +57,7 @@ class ChecklistController extends RESTController {
         return $data;
     }
 
-    public function put($idEvent) {
+    public function put() {
         
         $request = new Request();
         $transactionManager = new TransactionManager();
@@ -66,16 +66,27 @@ class ChecklistController extends RESTController {
         $transaction = $transactionManager->get();
         try {
             // Récupération de l'événement
-            $event = Event::findFirst("id = " . $idEvent);
-            if (!$event) {
+            if (isset($datas->event_id)) {
+                $event = Event::findFirst("id = " . $datas->event_id);
+                if (!$event) {
+                    throw new HTTPException(
+                        'Bad Request', 400, array(
+                            'dev' => 'Aucun evenement trouvé',
+                            'internalCode' => 'SpiritErrorEventControllerPut',
+                            'more' => 'event_id == ' . $datas->event_id
+                        )
+                    );
+                }
+            }else {
                 throw new HTTPException(
                     'Bad Request', 400, array(
-                        'dev' => 'Aucun evenement trouvé',
+                        'dev' => 'Aucun evenement renseigné',
                         'internalCode' => 'SpiritErrorEventControllerPut',
-                        'more' => '$idEvent == ' . $idEvent
+                        'more' => 'event_id == '. $datas->event_id
                     )
                 );
             }
+            
             // Si la checklist n'existe pas, on la créer
             if (isset($datas->checklist_id)) {
 
@@ -92,7 +103,7 @@ class ChecklistController extends RESTController {
             }else {
                 $checklist = new Checklist();
                 $checklist->setTransaction($transaction);
-                $checklist->setEventId($idEvent);
+                $checklist->setEventId($datas->event_id);
                 if (isset($datas->name)) {
                     $checklist->setName($datas->name);
                 }

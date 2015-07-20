@@ -33,7 +33,7 @@ return call_user_func(function(){
 	$checklistCollection->head('/{id:[0-9]+}', 'getOne');
 	$checklistCollection->post('/', 'post');
 	$checklistCollection->delete('/{id:[0-9]+}', 'delete');
-	$checklistCollection->put('/{id:[0-9]+}', 'put');
+	$checklistCollection->put('/', 'put');
 	$checklistCollection->patch('/{id:[0-9]+}', 'patch');
 
 	return $checklistCollection;
