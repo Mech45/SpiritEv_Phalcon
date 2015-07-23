@@ -8,16 +8,12 @@ use PhalconRest\Exceptions\HTTPException;
 use PhalconRest\Models\Event;
 use PhalconRest\Models\Invitation;
 
-require_once('vendor/autoload.php');
-
 class InvitationController extends RESTController {
     /**
     * Sets which fields may be searched against, and which fields are allowed to be returned in
     * partial responses.
     * @var array
     */
-//    private $baseLocation = "/var/www/public/img/";
-//    private $baseUrl = "http://clemgeek1.xyz/img/";
 //    
 //   protected $allowedFields = array (
 //           'search' => array('name', 'firstname', 'username', "civility"),
@@ -26,10 +22,6 @@ class InvitationController extends RESTController {
     
     public function get() {
         
-//        $message = \Swift_Message::newInstance();
-//        
-//        $mail = \Swift_Mailer::newInstance();
-//        
         $results = Invitation::find();
         return $this->respond($this->search($this->genericGet($results)));
     }
@@ -64,92 +56,6 @@ class InvitationController extends RESTController {
             );
         }
         return $data;
-    }
-
-    public function put($id) {
-//        $request = new Request();
-//        $datas = $request->getJsonRawBody();
-//        $profil = Profile::findFirst("id = " . $id);
-//        if (!$profil) {
-//            throw new HTTPException(
-//                'Bad Request',
-//                400,
-//                array (
-//                    'dev' => 'Aucun profil trouvé',
-//                    'internalCode' => 'SpiritErrorProfilControllerPut',
-//                    'more' => '$id == ' . $id
-//                )
-//            );
-//        }
-//        if (isset($datas->name)) {
-//            $profil->setName($datas->name);
-//        } if (isset($datas->firstname)) {
-//            $profil->setFirstname($datas->firstname);
-//        } if (isset($datas->username)) {
-//            $user = User::findFirst("profile_id=" . $id);
-//            if (!$user) {
-//                throw new HTTPException(
-//                    'Bad Request',
-//                    400,
-//                    array (
-//                        'dev' => 'Aucun utilisateur trouvé',
-//                        'internalCode' => 'SpiritErrorProfilControllerPut',
-//                        'more' => '$profile_id == ' . $id
-//                    )
-//                );
-//            }
-//            $user->username = $datas->username;
-//            $user->update();
-//        } if (isset($datas->email)) {
-//            $user = User::findFirst("profile_id=" . $id);
-//            if (!$user) {
-//                throw new HTTPException(
-//                    'Bad Request',
-//                    400,
-//                    array (
-//                        'dev' => 'Aucun utilisateur trouvé',
-//                        'internalCode' => 'SpiritErrorProfilControllerPut',
-//                        'more' => '$profile_id == ' . $id
-//                    )
-//                );
-//            }
-//            $user->email = $datas->email;
-//            $user->update();
-//        } if (isset($datas->civility)) {
-//            $civility = Civility::findFirstByName($datas->civility);
-//            if (!$civility) {
-//                throw new HTTPException (
-//                    'Bad Request',
-//                    400,
-//                    array (
-//                        'dev' => 'Aucune civility trouvée',
-//                        'internalCode' => 'SpiritErrorProfilControllerPut',
-//                        'more' => '$civility_id == ' . $id
-//                    )
-//                );
-//            }
-//            $profil->civility_id = $civility->id;
-//        } if (isset($datas->birthday)) {
-//            $profil->setBirthday($datas->birthday);
-//        } if (isset($datas->language)) {
-//            $language = Language::findFirstByCode($datas->language);
-//            if (!$language) {
-//                throw new HTTPException (
-//                    'Bad Request',
-//                    400,
-//                    array (
-//                        'dev' => 'Aucune civility trouvée',
-//                        'internalCode' => 'SpiritErrorProfilControllerPut',
-//                        'more' => '$civility_id == ' . $id
-//                    )
-//                );
-//            }
-//            $profil->language_id = $language->id;
-//        } if (isset($datas->password) && isset($datas->newpassword) && isset($datas->renewpassword)) {
-//            $this->setNewPassword($id, $datas->password, $datas->newpassword, $datas->renewpassword);
-//        }
-//        $profil->update();
-//        return array('Put / stub');
     }
 
     public function createInvitations() {
