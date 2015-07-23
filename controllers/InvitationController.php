@@ -2,9 +2,11 @@
 
 namespace PhalconRest\Controllers;
 
+use Phalcon\Mvc\Model\Transaction\Manager as TransactionManager;
+use Phalcon\Http\Request as Request;
 use PhalconRest\Exceptions\HTTPException;
+use PhalconRest\Models\Event;
 use PhalconRest\Models\Invitation;
-use PhalconRest\Models\ProfileHasProfile;
 
 require_once('vendor/autoload.php');
 
@@ -150,6 +152,97 @@ class InvitationController extends RESTController {
 //        return array('Put / stub');
     }
 
+    public function createInvitations() {
+        
+        $request = new Request();
+        $datas = $request->getJsonRawBody();
+        $transactionManager = new TransactionManager();
+        $transaction = $transactionManager->get();
+        
+        if (isset($datas->event_id)) {
+            $event = Event::findFirst("id = " . $datas->event_id);
+            if (!$event) {
+                throw new HTTPException(
+                    'Bad Request',
+                    400,
+                    array (
+                        'dev' => 'Aucun event trouvé',
+                        'internalCode' => 'SpiritErrorInvitationControllerPut',
+                        'more' => '$id == ' . $datas->event_id
+                    )
+                );
+            }
+        }else {
+            throw new HTTPException(
+                'Bad Request',
+                400,
+                array (
+                    'dev' => 'Aucun event renseigné',
+                    'internalCode' => 'SpiritErrorInvitationControllerPut',
+                    'more' => '$id == ' . $datas->event_id
+                )
+            );
+        }
+        
+        try {
+            if (isset($datas->guests)) {
+                foreach ($datas->guests as $guest){
+                    $invitation = new Invitation();
+                    $invitation->setTransaction($transaction);
+                    
+                    if (isset($datas->profile_id)) {
+
+                        $invitation->setProfileId($datas->profile_id);
+                        
+                        if (isset($guest->guest_id))
+                            $invitation->setGuestId($guest->guest_id);
+                        
+                        if (isset($guest->email))
+                            $invitation->setEmail($guest->email);
+                        
+                        if (isset($guest->invitation_date))
+                            $invitation->setInvitationDate($guest->invitation_date);
+                        
+                        if ($invitation->save() == false) {
+//                            echo "Umh, We can't store robots right now: \n";
+//                            foreach ($invitation->getMessages() as $message) {
+//                                echo $message, "\n";
+//                            }
+                            $transaction->rollback("Can't save checklist");
+                        }
+
+                        unset($invitation);
+                    }else {
+                        throw new HTTPException(
+                            'Bad Request',
+                            400,
+                            array (
+                                'dev' => 'Aucun profile_id renseigné',
+                                'internalCode' => 'SpiritErrorInvitationControllerPut',
+                                'more' => '$id == ' . $datas->profile_id
+                            )
+                        );
+                    }
+                }
+            }else {
+                throw new HTTPException(
+                    'Bad Request',
+                    400,
+                    array (
+                        'dev' => 'Aucun invités renseigné',
+                        'internalCode' => 'SpiritErrorInvitationControllerPut',
+                        'more' => '$id == ' . $datas->event_id
+                    )
+                );
+            }
+            $transaction->commit();
+            
+        } catch (Phalcon\Mvc\Model\Transaction\Failed $e) {
+            echo 'Failed, reason: ', $e->getMessage();
+        }
+        return array('Put / stub');
+    }
+    
     public function search($data) {
         $results = array();
         foreach($data as $record) {
