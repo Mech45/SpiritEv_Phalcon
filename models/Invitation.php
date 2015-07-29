@@ -61,6 +61,12 @@ class Invitation extends \Phalcon\Mvc\Model
     protected $token_expiration;
 
     /**
+     *
+     * @var integer
+     */
+    protected $event_id;
+    
+    /**
      * Method to set the value of field id
      *
      * @param integer $id
@@ -176,6 +182,19 @@ class Invitation extends \Phalcon\Mvc\Model
 
         return $this;
     }
+    
+    /**
+     * Method to set the value of field event_id
+     *
+     * @param integer $event_id
+     * @return $this
+     */
+    public function setEventId($event_id)
+    {
+        $this->event_id = $event_id;
+
+        return $this;
+    }
 
     /**
      * Returns the value of field id
@@ -266,6 +285,16 @@ class Invitation extends \Phalcon\Mvc\Model
     {
         return $this->token_expiration;
     }
+    
+    /**
+     * Returns the value of field event_id
+     *
+     * @return integer
+     */
+    public function getEventId()
+    {
+        return $this->event_id;
+    }
 
     /**
      * Validations and business logic
@@ -296,6 +325,7 @@ class Invitation extends \Phalcon\Mvc\Model
     public function initialize()
     {
         $this->belongsTo('profile_id', 'Profile', 'id', array('alias' => 'Profile'));
+        $this->belongsTo('event_id', 'Event', 'id', array('alias' => 'Event'));
     }
 
     /**

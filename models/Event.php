@@ -311,6 +311,7 @@ class Event extends \Phalcon\Mvc\Model {
         $this->hasMany('id', 'Checklist', 'event_id', array('alias' => 'Checklist'));
         $this->hasMany('id', 'Comment', 'event_id', array('alias' => 'Comment'));
         $this->hasMany('id', 'EventHasRight', 'event_id', array('alias' => 'EventHasRight'));
+        $this->hasMany('id', 'Invitation', 'event_id', array('alias' => 'Invitation'));
         $this->hasMany('id', 'Media', 'evenement_id', array('alias' => 'Media'));
     }
 
