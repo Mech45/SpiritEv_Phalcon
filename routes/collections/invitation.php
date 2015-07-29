@@ -33,7 +33,7 @@ return call_user_func(function(){
 	$invitationCollection->head('/{id:[0-9]+}', 'getOne');
 	$invitationCollection->post('/', 'post');
 	$invitationCollection->delete('/{id:[0-9]+}', 'delete');
-	$invitationCollection->put('/', 'createInvitations');
+	$invitationCollection->put('/', 'createEventInvitations');
 	$invitationCollection->patch('/{id:[0-9]+}', 'patch');
 
 	return $invitationCollection;

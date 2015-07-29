@@ -58,7 +58,12 @@ class InvitationController extends RESTController {
         return $data;
     }
 
-    public function createInvitations() {
+    /**
+     * Création des invitations lorsque l'on créer un event
+     * @return type
+     * @throws HTTPException
+     */
+    public function createEventInvitations() {
         
         $request = new Request();
         $datas = $request->getJsonRawBody();
@@ -95,6 +100,19 @@ class InvitationController extends RESTController {
                 foreach ($datas->guests as $guest){
                     $invitation = new Invitation();
                     $invitation->setTransaction($transaction);
+                    
+                    // Si des invitations pour l'event existent déjà, on les supprimes
+                    $resultsEvent = Invitation::find("event_id = " . $datas->event_id);
+                    if ($resultsEvent->count() != 0) {
+                        foreach ($resultsEvent as $res) {
+                            $res->setTransaction($transaction);
+                            if ($res->delete() == false) {
+                                $transaction->rollback("Can't delete invitation");
+                            }
+                        }
+                    }
+                    
+                    $invitation->setEventId($datas->event_id);
                     
                     if (isset($datas->profile_id)) {
 
