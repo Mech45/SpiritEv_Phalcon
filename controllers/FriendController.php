@@ -43,7 +43,7 @@ class FriendController extends RESTController {
         $parameters_local = array(
                         "id" => $owner_id
                     );
-        $conditions_pending_ext = "profile_id = :id: AND token IS NOT NULL AND validation_invitation_date IS NULL";
+        $conditions_pending_ext = "profile_id = :id: AND token IS NOT NULL AND validation_invitation_date IS NOT NULL";
         $parameters_ext = array(
                         "id" => $owner_id
                     );
