@@ -35,7 +35,7 @@ class FriendController extends RESTController {
         $parameters_all_profile = array(
                         "id" => $owner_id
                     );
-        $conditions_all_guest = "profile_friend_id1= :id:";
+        $conditions_all_guest = "profile_friend_id= :id:";
         $parameters_all_guest = array(
                         "id" => $owner_id
                     );
@@ -114,7 +114,7 @@ class FriendController extends RESTController {
     {
       $status = "confirmed";
       if ($trigger == 0)
-        $id_to_use = "profile_friend_id1";
+        $id_to_use = "profile_friend_id";
       elseif ($trigger == 1)
         $id_to_use = "profile_id";
       elseif ($trigger == 2)

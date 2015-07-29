@@ -15,7 +15,7 @@ class ProfileHasProfile extends \Phalcon\Mvc\Model
      *
      * @var integer
      */
-    protected $profile_friend_id1;
+    protected $profile_friend_id;
 
     /**
      * Method to set the value of field profile_id
@@ -31,14 +31,14 @@ class ProfileHasProfile extends \Phalcon\Mvc\Model
     }
 
     /**
-     * Method to set the value of field profile_friend_id1
+     * Method to set the value of field profile_friend_id
      *
-     * @param integer $profile_friend_id1
+     * @param integer $profile_friend_id
      * @return $this
      */
-    public function setProfileFriendId1($profile_friend_id1)
+    public function setProfileFriendId($profile_friend_id)
     {
-        $this->profile_friend_id1 = $profile_friend_id1;
+        $this->profile_friend_id = $profile_friend_id;
 
         return $this;
     }
@@ -54,13 +54,13 @@ class ProfileHasProfile extends \Phalcon\Mvc\Model
     }
 
     /**
-     * Returns the value of field profile_friend_id1
+     * Returns the value of field profile_friend_id
      *
      * @return integer
      */
-    public function getProfileFriendId1()
+    public function getProfileFriendId()
     {
-        return $this->profile_friend_id1;
+        return $this->profile_friend_id;
     }
 
     /**
@@ -69,7 +69,7 @@ class ProfileHasProfile extends \Phalcon\Mvc\Model
     public function initialize()
     {
         $this->belongsTo('profile_id', 'Profile', 'id', array('alias' => 'Profile'));
-        $this->belongsTo('profile_friend_id1', 'Profile', 'id', array('alias' => 'Profile'));
+        $this->belongsTo('profile_friend_id', 'Profile', 'id', array('alias' => 'Profile'));
     }
 
     /**
