@@ -2,11 +2,12 @@
 
 namespace PhalconRest\Controllers;
 
-use Phalcon\Mvc\Model\Transaction\Manager as TransactionManager;
 use Phalcon\Http\Request as Request;
+use Phalcon\Mvc\Model\Transaction\Manager as TransactionManager;
 use PhalconRest\Exceptions\HTTPException;
 use PhalconRest\Models\Event;
 use PhalconRest\Models\Invitation;
+use PhalconRest\Models\Profile;
 
 class InvitationController extends RESTController {
     /**
@@ -93,6 +94,21 @@ class InvitationController extends RESTController {
                     'more' => '$id == ' . $datas->event_id
                 )
             );
+        }
+        
+        if (isset($datas->profile_id)) {
+            $profile = Profile::findFirst("id = " . $datas->profile_id);
+            if (!$profile) {
+                throw new HTTPException(
+                    'Bad Request',
+                    400,
+                    array (
+                        'dev' => 'Aucun profil trouvé',
+                        'internalCode' => 'SpiritErrorInvitationControllerPut',
+                        'more' => 'profile_id == ' . $datas->profile_id
+                    )
+                );
+            }
         }
         
         try {
