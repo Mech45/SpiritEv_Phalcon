@@ -29,6 +29,7 @@ return call_user_func(function(){
 	$eventCollection->head('/', 'get');
 
 	// $id will be passed as a parameter to the Controller's specified function
+	$eventCollection->get('/checklist', 'getChecklist');
 	$eventCollection->get('/{id:[0-9]+}', 'getOne');
 	$eventCollection->head('/{id:[0-9]+}', 'getOne');
 	$eventCollection->post('/', 'saveFirstStep');

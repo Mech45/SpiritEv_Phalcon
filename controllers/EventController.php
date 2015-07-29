@@ -9,6 +9,8 @@ use PhalconRest\Models\Media;
 use PhalconRest\Models\ProfileHasProfile;
 use PhalconRest\Models\User;
 use PhalconRest\Responses\Response;
+use PhalconRest\Models\Ressource;
+use \PhalconRest\Models\Category;
 
 class EventController extends RESTController {
 
@@ -17,14 +19,14 @@ class EventController extends RESTController {
      * partial responses.
      * @var array
      */
-    private $baseLocation = "/var/www/public/img/";
-    private $baseUrl = "http://clemgeek1.xyz/img/";
+    //private $baseLocation = "/var/www/public/img/";
+    //private $baseUrl = "http://clemgeek1.xyz/img/";
 
-//    
-//   protected $allowedFields = array (
-//           'search' => array('name', 'firstname', 'username', "civility"),
-//           'partials' => array('name', 'firstname', 'username', "civility")
-//   );
+    
+   protected $allowedFields = array (
+           'search' => array('ressource_name', 'ressource_category'),
+           'partials' => array('ressource_name', 'ressource_category')
+   );
 
     public function get() {
         $results = Event::find();
@@ -61,6 +63,19 @@ class EventController extends RESTController {
             );
         }
         return $data;
+    }
+    
+    public function getChecklist() {
+        $data = array();
+        $results = Ressource::find();
+        foreach ($results as $result) {
+            $data[] = array (
+                "ressource_id" => $result->id,
+                "ressource_name" => $result->name,
+                "ressource_category" => Category::findFirst($result->category_id)->name
+            );
+        }
+        return $this->respond($this->search($data));
     }
     
     public function saveFirstStep() {
