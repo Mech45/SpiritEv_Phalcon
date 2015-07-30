@@ -141,11 +141,12 @@ class FriendController extends RESTController {
                 // "used_trigger" => $id_to_use,
                 "username" => User::findFirst("profile_id=" . ($result->$id_to_use))->username,
                 "status" => $status,
-                "picture" => array (
-                                "name" => Media::findFirst("profile_id=" . $result->$id_to_use)->name,
-                                "path" => Media::findFirst("profile_id=" . $result->$id_to_use)->path,
-                                "date_import" => Media::findFirst("profile_id=" . $result->$id_to_use)->date_import
-                )
+                "picture" => Media::findFirst("profile_id=" . $result->$id_to_use)->path
+                // array (
+                //                 "name" => Media::findFirst("profile_id=" . $result->$id_to_use)->name,
+                //                 "path" => Media::findFirst("profile_id=" . $result->$id_to_use)->path,
+                //                 "date_import" => Media::findFirst("profile_id=" . $result->$id_to_use)->date_import
+                // )
             );
         }
       }
