@@ -119,7 +119,7 @@ $di->setShared('requestBody', function() {
  */
 $app = new Phalcon\Mvc\Micro();
 $app->setDI($di);
-
+//TODO authentification
 /**
  * Before every request, make sure user is authenticated.
  * Returning true in this function resumes normal routing.
